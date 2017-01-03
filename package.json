@@ -1,0 +1,25 @@
+{
+  "name": "generator-ckeditor4",
+  "version": "0.1.0",
+  "description": "Yeoman generator for CKEditor 4",
+  "scripts": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mlewand/generator-ckeditor4.git"
+  },
+  "keywords": [
+    "CKEditor4",
+    "CKEditor",
+    "yeoman-generator"
+  ],
+  "author": "Marek Lewandowski",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/mlewand/generator-ckeditor4/issues"
+  },
+  "homepage": "https://github.com/mlewand/generator-ckeditor4#readme",
+  "dependencies": {
+    "open": "^0.0.5",
+    "yeoman-generator": "^1.0.1"
+  }
+}

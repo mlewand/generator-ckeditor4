@@ -1,0 +1,6 @@
+{
+  "name": "generator-ckeditor4",
+  "dependencies": {
+    "yeoman-generator": "registry:dt/yeoman-generator#0.0.0+20160915014424"
+  }
+}
