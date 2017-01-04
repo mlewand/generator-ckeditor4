@@ -18,3 +18,7 @@ Opens your web browser on a page where you can fill a new ticket.
 Opens an issue with a given id.
 
 If you're using command from CKEditor git repository on `t/<ticketNumber>` branch, you could skip ticket number - that way it will automatically pick your current ticket number.
+
+### Roadmap
+
+Simply opens CKEditor 4 roadmap.

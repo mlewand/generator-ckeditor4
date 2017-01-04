@@ -12,7 +12,7 @@ class CKEditor4Generator extends Generator {
 			required: true,
 			description: 'Action type, one of the following: add, open.',
 			type: ( val ) => {
-				let allowedValues = [ 'add', 'open' ];
+				let allowedValues = [ 'add', 'open', 'roadmap' ];
 
 				if ( allowedValues.indexOf( val ) === -1 ) {
 					throw new Error( `Invalid value ${val} for action argument.` );
@@ -32,7 +32,8 @@ class CKEditor4Generator extends Generator {
 	dispatch() {
 		let mapping = {
 			'add': this._add,
-			'open': this._open
+			'open': this._open,
+			'roadmap': this._roadmap
 		}
 
 		if ( mapping[ this.options.action ] ) {
@@ -57,6 +58,10 @@ class CKEditor4Generator extends Generator {
 		}
 
 		open( `https://dev.ckeditor.com/ticket/${ticketNumber}` );
+	}
+
+	_roadmap() {
+		open( 'https://dev.ckeditor.com/roadmap' );
 	}
 }
 
