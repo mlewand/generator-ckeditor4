@@ -1,4 +1,5 @@
-var Generator = require( 'yeoman-generator' ),
+var Workspace = require( '../../src/Workspace' ),
+	Generator = require( 'yeoman-generator' ),
 	open = require( 'open' );
 
 class CKEditor4Generator extends Generator {
@@ -9,12 +10,12 @@ class CKEditor4Generator extends Generator {
 
 		this.argument( 'action', {
 			required: true,
-			description: 'action',
+			description: 'Action type, one of the following: add, open.',
 			type: ( val ) => {
 				let allowedValues = [ 'add', 'open' ];
 
 				if ( allowedValues.indexOf( val ) === -1 ) {
-					throw new Error( `Invalid value ${val} for action argument. ` );
+					throw new Error( `Invalid value ${val} for action argument.` );
 				}
 
 				return val;
@@ -23,7 +24,7 @@ class CKEditor4Generator extends Generator {
 
 		this.argument( 'ticketNumber', {
 			required: false,
-			description: 'Number of ticket to be viewed, it\'s required for open action',
+			description: 'Number of ticket to be viewed, it\'s used in "open" action. If skipped will try to guess based on branch name.',
 			type: Number
 		} );
 	}
@@ -44,11 +45,18 @@ class CKEditor4Generator extends Generator {
 	}
 
 	_open() {
-		if ( !this.options.ticketNumber ) {
-			throw new Error( `Invalid ticket number "${this.options.ticketNumber}" given.` );
+		let ticketNumber = this.options.ticketNumber;
+
+		if ( ticketNumber === undefined ) {
+			let ckeWorkspace = new Workspace( this );
+			ticketNumber = ckeWorkspace.getTicketNumber();
 		}
 
-		open( `https://dev.ckeditor.com/ticket/${this.options.ticketNumber}` );
+		if ( !ticketNumber ) {
+			throw new Error( `Invalid ticket number "${ticketNumber}" given.` );
+		}
+
+		open( `https://dev.ckeditor.com/ticket/${ticketNumber}` );
 	}
 }
 

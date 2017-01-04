@@ -19,6 +19,7 @@
   },
   "homepage": "https://github.com/mlewand/generator-ckeditor4#readme",
   "dependencies": {
+    "git-rev-sync": "^1.8.0",
     "open": "^0.0.5",
     "yeoman-generator": "^1.0.1"
   }
