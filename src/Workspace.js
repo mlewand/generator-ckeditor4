@@ -26,7 +26,7 @@ class Workspace {
 	getBranch() {
 		let gitRevSync = require( 'git-rev-sync' );
 
-		return gitRevSync.branch( this.generator.destinationPath() );
+		return gitRevSync.branch( this._getDirectoryPath() );
 	}
 
 	/**
@@ -39,6 +39,40 @@ class Workspace {
 		let branch = this.getBranch();
 
 		return branch.startsWith( 't/' ) ? parseInt( branch.substr( 2 ) ) : null;
+	}
+
+	/**
+	 * @returns {String}
+	 * @memberOf Workspace
+	 */
+	getVersion() {
+		return this._getPackageInfo().version;
+	}
+
+	/**
+	 * Returns parsed info from `package.json` as an object.
+	 *
+	 * @returns {Object}
+	 * @memberOf Workspace
+	 */
+	_getPackageInfo() {
+		let path = require( 'path' );
+
+		if ( this._packageJson ) {
+			return this._packageJson;
+		}
+
+		this._packageJson = require( `${this._getDirectoryPath()}${path.sep}package.json` );
+
+		return this._packageJson;
+	}
+
+	/**
+	 * @returns {String} Path to main CKEditor directory.
+	 * @memberOf Workspace
+	 */
+	_getDirectoryPath() {
+		return this.generator.destinationPath();
 	}
 }
 
