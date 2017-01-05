@@ -2,7 +2,7 @@ var Workspace = require( '../../src/Workspace' ),
 	Generator = require( 'yeoman-generator' ),
 	open = require( 'open' );
 
-class CKEditor4Generator extends Generator {
+class IssueGenerator extends Generator {
 	constructor( args, opts ) {
 		super( args, opts );
 
@@ -78,7 +78,7 @@ class CKEditor4Generator extends Generator {
 
 	/**
 	 * @returns {Workspace} An instance describing CKEditor instance.
-	 * @member CKEditor4Generator
+	 * @member IssueGenerator
 	 */
 	_getWorkspace() {
 		if ( !this.workspace ) {
@@ -89,4 +89,4 @@ class CKEditor4Generator extends Generator {
 	}
 }
 
-module.exports = CKEditor4Generator;
+module.exports = IssueGenerator;
