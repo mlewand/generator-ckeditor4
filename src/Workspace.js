@@ -49,6 +49,12 @@ class Workspace {
 		return this._getPackageInfo().version;
 	}
 
+	getRevision() {
+		let gitRevSync = require( 'git-rev-sync' );
+
+		return gitRevSync.short( this._getDirectoryPath() );
+	}
+
 	/**
 	 * Returns parsed info from `package.json` as an object.
 	 *
