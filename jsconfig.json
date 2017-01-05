@@ -6,5 +6,8 @@
 		"include": [
 			"yeoman-generator"
 		]
+	},
+	"compilerOptions": {
+		"target": "es6"
 	}
 }
