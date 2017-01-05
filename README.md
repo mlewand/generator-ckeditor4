@@ -22,3 +22,11 @@ If you're using command from CKEditor git repository on `t/<ticketNumber>` branc
 ### Roadmap
 
 Simply opens CKEditor 4 roadmap.
+
+### Milestone
+
+Opens a details for the given milestone.
+
+`yo ckeditor4:issue milestone 4.6.0`
+
+Milestone number might be skipped, then current version of CKEditor is used.
