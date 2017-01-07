@@ -1,8 +1,7 @@
-var Workspace = require( '../../src/Workspace' ),
-	Generator = require( 'yeoman-generator' ),
+let GeneratorBase = require( '../../src/GeneratorBase' ),
 	open = require( 'open' );
 
-class IssueGenerator extends Generator {
+class IssueGenerator extends GeneratorBase {
 	constructor( args, opts ) {
 		super( args, opts );
 
@@ -52,7 +51,7 @@ class IssueGenerator extends Generator {
 		}
 
 		if ( !ticketNumber ) {
-			throw new Error( `Invalid ticket number "${ticketNumber}" given.` );
+			throw new Error( `Invalid ticket number given (resolved to "${ticketNumber}").` );
 		}
 
 		open( `https://dev.ckeditor.com/ticket/${ticketNumber}` );
@@ -74,18 +73,6 @@ class IssueGenerator extends Generator {
 		}
 
 		open( `http://dev.ckeditor.com/milestone/CKEditor%20${version}` );
-	}
-
-	/**
-	 * @returns {Workspace} An instance describing CKEditor instance.
-	 * @member IssueGenerator
-	 */
-	_getWorkspace() {
-		if ( !this.workspace ) {
-			this.workspace = new Workspace( this );
-		}
-
-		return this.workspace;
 	}
 }
 
