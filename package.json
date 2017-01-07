@@ -2,7 +2,9 @@
   "name": "generator-ckeditor4",
   "version": "0.1.0",
   "description": "Yeoman generator for CKEditor 4",
-  "scripts": {},
+  "scripts": {
+    "test": "./node_modules/.bin/mocha \"tests/**/*.js\" --reporter list"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/mlewand/generator-ckeditor4.git"
@@ -22,5 +24,14 @@
     "git-rev-sync": "^1.8.0",
     "open": "^0.0.5",
     "yeoman-generator": "^1.0.1"
+  },
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "chai-as-promised": "^6.0.0",
+    "mocha": "^3.2.0",
+    "proxyquire": "^1.7.10",
+    "sinon": "^1.17.7",
+    "sinon-chai": "^2.8.0",
+    "yeoman-test": "^1.6.0"
   }
 }
