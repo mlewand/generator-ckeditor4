@@ -78,9 +78,10 @@ class BuildInfo {
 	}
 
 	getPlugins() {
-		return new Promise( ( resolve, reject ) => {
-			resolve( {} );
-		} );
+		return this._parsePresetConfig( this.presetPath )
+			.then( ( config ) => {
+				return config.plugins;
+			} );
 	}
 
 	/**

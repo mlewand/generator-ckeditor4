@@ -68,9 +68,19 @@ describe( 'BuildInfo', () => {
 
 	describe( 'getPlugins', () => {
 
+		it( 'Returns valid type', () => {
+			let mock = {
+				presetPath: path.join( __dirname, '_fixtures', 'BuildInfo', 'sample-cfg.js' ),
+				_parsePresetConfig: BuildInfo.prototype._parsePresetConfig
+			};
+
+			expect( BuildInfo.prototype.getPlugins.call( mock ) ).to.be.an( 'promise' );
+		} );
+
 		it( 'Returns valid value', () => {
 			let mock = {
-				presetPath: path.join( __dirname, '_fixtures', 'BuildInfo', 'sample-cfg.js' )
+				presetPath: path.join( __dirname, '_fixtures', 'BuildInfo', 'sample-cfg.js' ),
+				_parsePresetConfig: BuildInfo.prototype._parsePresetConfig
 			};
 
 			return BuildInfo.prototype.getPlugins.call( mock )
@@ -83,7 +93,6 @@ describe( 'BuildInfo', () => {
 					} );
 				} );
 		} );
-
 	} );
 
 
@@ -118,7 +127,7 @@ describe( 'BuildInfo', () => {
 				} );
 		} );
 
-		it( 'rejects the promise if there is no CKBUILDER_CONFIG' , () => {
+		it( 'rejects the promise if there is no CKBUILDER_CONFIG', () => {
 			let jsPath = path.join( __dirname, '_fixtures', 'BuildInfo', 'wrong-cfg.js' );
 
 			return expect( BuildInfo.prototype._parsePresetConfig.call( null, jsPath ) )
