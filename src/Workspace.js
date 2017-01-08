@@ -67,10 +67,14 @@ class Workspace {
 			pluginsDir = path.join( this._getDirectoryPath(), 'plugins' );
 
 		return new Promise( ( resolve, reject ) => {
-
 			fs.readdir( pluginsDir, ( err, files ) => {
 				if ( err ) {
-					reject( err );
+					if ( err.code === 'ENOENT' ) {
+						// Simply return no results when plugins dir is not there.
+						resolve( [] );
+					} else {
+						reject( err );
+					}
 				} else {
 					files = files.filter( name => [ '.', '..' ].indexOf( name ) === -1 );
 
