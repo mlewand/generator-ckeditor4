@@ -1,16 +1,11 @@
 
-let expect = require( 'chai' ).expect,
-	sinon = require( 'sinon' ),
-	path = require( 'path' ),
+let path = require( 'path' ),
 	yeomanTest = require( 'yeoman-test' ),
-	proxyquire = require( 'proxyquire' ),
 	openStub = sinon.stub(),
-	testedModulePath = '../../../generators/issue/index';
+	testedModulePathFromRoot = '../generators/issue/index',
+	testedModulePath = '../../' + testedModulePathFromRoot;
 
-require( 'chai' ).use( require( 'sinon-chai') );
-require( 'chai' ).use( require( 'chai-as-promised') );
-
-proxyquire( testedModulePath, {
+proxyquire( testedModulePathFromRoot, {
 	open: openStub
 } );
 
