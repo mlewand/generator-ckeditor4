@@ -56,6 +56,45 @@ class Workspace {
 	}
 
 	/**
+	 * Returns a promise with all the plugins available in the workspace.
+	 *
+	 * @returns Promise<String[]>
+	 * @memberOf Workspace
+	 */
+	getPlugins() {
+		let fs = require( 'fs' ),
+			path = require( 'path' ),
+			pluginsDir = path.join( this._getDirectoryPath(), 'plugins' );
+
+		return new Promise( ( resolve, reject ) => {
+
+			fs.readdir( pluginsDir, ( err, files ) => {
+				if ( err ) {
+					reject( err );
+				} else {
+					files = files.filter( name => [ '.', '..' ].indexOf( name ) === -1 );
+
+					let stats = files.map( name => new Promise( ( statsResolve, statsReject ) => {
+						fs.stat( path.join( pluginsDir, name ), function( err, stats ) {
+							if ( err ) {
+								statsReject( err );
+							} else {
+								statsResolve( stats );
+							}
+						} );
+					} ) );
+
+					Promise.all( stats ).then( ( fileStats ) => {
+						resolve( files.filter( ( val, index ) => {
+							return fileStats[ index ].isDirectory();
+						} ) );
+					} );
+				}
+			} );
+		} );
+	}
+
+	/**
 	 * Returns parsed info from `package.json` as an object.
 	 *
 	 * @returns {Object}
