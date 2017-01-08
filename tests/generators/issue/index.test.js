@@ -11,7 +11,7 @@ proxyquire( testedModulePathFromRoot, {
 
 let IssueGenerator = require( testedModulePath );
 
-describe( 'Sample ts', () => {
+describe( 'IssueGenerator', () => {
 	beforeEach( () => {
 		openStub.reset();
 	} );

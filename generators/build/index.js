@@ -1,7 +1,8 @@
 let GeneratorBase = require( '../../src/GeneratorBase' ),
 	path = require( 'path' ),
 	fs = require( 'fs' ),
-	spawn = require( 'child_process' ).spawn;
+	spawn = require( 'child_process' ).spawn,
+	BuildInfo = require( '../../src/BuildInfo' );
 
 class BuildGenerator extends GeneratorBase {
 	constructor( args, opts ) {
@@ -14,50 +15,46 @@ class BuildGenerator extends GeneratorBase {
 			// and builder includes built code which would lead to infinite process.
 			tmpOutputDir = fs.mkdtempSync( './../cke4build' ),
 			outputDir = './build';
-			// outputDir = './../cke-build';
 
 		return new Promise( ( resolve, reject ) => {
 				// Path to generator's main dir, where presets, and jar file can be found.
-				let generatorBasePath = path.join( __dirname, '..', '..' ),
-					jarPath = path.join( generatorBasePath, 'ckbuilder', '2.3.1', 'ckbuilder.jar' ),
-					skip = '-s', // Skip plugins not required by the preset.
-					preset = 'basic',
-					presetConfigPath = path.join( generatorBasePath, 'presets', 'basic-build-config.js' );
-
-				let output = '',
+				let preset = 'basic',
+					generatorBasePath = path.join( __dirname, '..', '..' ),
+					info = new BuildInfo( {
+						jarPath: path.join( generatorBasePath, 'ckbuilder', '2.3.1', 'ckbuilder.jar' ),
+						sourceDir: that._getWorkspace()._getDirectoryPath(),
+						targetDir: tmpOutputDir,
+						skip: true,
+						preset: preset,
+						presetPath: path.join( generatorBasePath, 'presets', preset + '-build-config.js' ),
+						zip: false,
+						tar: false,
+						overwrite: true
+					}, that._getWorkspace() ),
+					output = '',
 					errOutput = '',
-					_args = [
-						'-jar', jarPath,
-						'--build', that._getWorkspace()._getDirectoryPath(),
-						tmpOutputDir,
-						skip,
-						'--version', `${that._getWorkspace().getVersion()} (${preset})`,
-						'--revision', that._getWorkspace().getRevision(),
-						'--build-config', presetConfigPath,
-						'--overwrite',
-						'--no-zip',
-						'--no-tar'
-					],
 					buildProcess;
 
 				that._markStage( `Calling ckbuilder.jar to build ${preset} preset` );
-				buildProcess = spawn( 'java', _args );
+
+				buildProcess = spawn( 'java', info.getArguments() );
 
 				buildProcess.stdout.on( 'data', data => that._onBuilderStdOut( String( data ) ) );
 				buildProcess.stderr.on( 'data', data => { errOutput += data; } );
-
 				buildProcess.on( 'error', ( error ) => {
 					reject( error.toString() );
 				} );
-
 				buildProcess.on( 'close', code => {
 					code === 0 ? resolve() : reject( `Invalid code returned: ${code}\n\nStderr:\n${errOutput}` );
 				} );
+
 			} ).then( () => {
 				that._markStage( `Moving temp build directory to ${outputDir}` );
 				fs.renameSync( tmpOutputDir, outputDir );
+				that._markStage( 'Done!' );
 			} ).catch( ( error ) => {
 				that._markStage( 'Error occurred, removing temp directory.' );
+				that.log( error );
 				fs.rmdirSync( tmpOutputDir );
 			} );
 	}
