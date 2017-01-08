@@ -1,4 +1,3 @@
-
 const PRESET_DEFAULT = 'basic';
 
 class BuildInfo {
@@ -76,6 +75,47 @@ class BuildInfo {
 		}
 
 		return ret;
+	}
+
+	getPlugins() {
+		return new Promise( ( resolve, reject ) => {
+			resolve( {} );
+		} );
+	}
+
+	/**
+	 * Parses preset config under given `path` and returns a promise that will provide config given.
+	 *
+	 * If `CKBUILDER_CONFIG` variable is missing it will reject the promise.
+	 *
+	 * @param {String} path
+	 * @returns Promise<object>
+	 * @memberOf BuildInfo
+	 */
+	_parsePresetConfig( path ) {
+		const util = require( 'util' );
+		const vm = require( 'vm' );
+		const fs = require( 'fs' );
+
+		return new Promise( ( resolve, reject ) => {
+			const sandbox = {};
+
+			fs.readFile( path, 'utf-8', ( err, code ) => {
+				if ( err ) {
+					reject( err );
+				} else {
+					vm.createContext( sandbox );
+
+					vm.runInContext( code, sandbox );
+
+					if ( 'CKBUILDER_CONFIG' in sandbox === false ) {
+						reject( new Error( 'Parsed preset config did not expose CKBUILDER_CONFIG variable.' ) );
+					}
+
+					resolve( sandbox.CKBUILDER_CONFIG );
+				}
+			} );
+		} );
 	}
 }
 
