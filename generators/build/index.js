@@ -1,12 +1,26 @@
 let GeneratorBase = require( '../../src/GeneratorBase' ),
 	path = require( 'path' ),
 	fs = require( 'fs' ),
+	rimraf = require( 'rimraf' ),
 	spawn = require( 'child_process' ).spawn,
 	BuildInfo = require( '../../src/BuildInfo' );
 
 class BuildGenerator extends GeneratorBase {
 	constructor( args, opts ) {
 		super( args, opts );
+
+		this.option( 'preset', {
+			description: 'Preset name to be built, one of the following: basic, standard or full.',
+			type: String,
+			default: 'basic'
+		} );
+
+		this.option( 'all', {
+			description: 'Whether to include other plugins / skins that are not a part of preset. However these plugins / skins ' +
+				'won\'t be merged into main ckeditor.js file.',
+			type: Boolean,
+			default: false
+		} )
 	}
 
 	dispatch() {
@@ -14,17 +28,22 @@ class BuildGenerator extends GeneratorBase {
 			// We'll put compiled files into a temp dir first, to avoid a situation where output directory is in CKEditor directory,
 			// and builder includes built code which would lead to infinite process.
 			tmpOutputDir = fs.mkdtempSync( './../cke4build' ),
-			outputDir = './build';
+			outputDir = './build',
+			overwrite = true;
 
 		return new Promise( ( resolve, reject ) => {
+				if ( fs.existsSync( outputDir ) && !overwrite ) {
+					reject( `Output directory "${outputDir}" already exists.` );
+				}
+
 				// Path to generator's main dir, where presets, and jar file can be found.
-				let preset = 'basic',
+				let preset = that.options.preset,
 					generatorBasePath = path.join( __dirname, '..', '..' ),
 					info = new BuildInfo( {
 						jarPath: path.join( generatorBasePath, 'ckbuilder', '2.3.1', 'ckbuilder.jar' ),
 						sourceDir: that._getWorkspace()._getDirectoryPath(),
 						targetDir: tmpOutputDir,
-						skip: true,
+						skip: !this.options.all,
 						preset: preset,
 						presetPath: path.join( generatorBasePath, 'presets', preset + '-build-config.js' ),
 						zip: false,
@@ -50,12 +69,17 @@ class BuildGenerator extends GeneratorBase {
 
 			} ).then( () => {
 				that._markStage( `Moving temp build directory to ${outputDir}` );
+
+				if ( overwrite && fs.existsSync( outputDir ) ) {
+					rimraf.sync( outputDir );
+				}
+
 				fs.renameSync( tmpOutputDir, outputDir );
 				that._markStage( 'Done!' );
 			} ).catch( ( error ) => {
 				that._markStage( 'Error occurred, removing temp directory.' );
 				that.log( error );
-				fs.rmdirSync( tmpOutputDir );
+				rimraf.sync( tmpOutputDir );
 			} );
 	}
 
