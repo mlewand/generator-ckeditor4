@@ -57,9 +57,7 @@ class BuildInfo {
 				'-jar', this.jarPath,
 				'--build', this.sourceDir,
 				this.targetDir,
-				'--version', `${this.workspace.getVersion()} (${this.preset})`,
-				'--revision', this.workspace.getRevision(),
-				'--build-config', this.presetPath
+				'--version', `${this.workspace.getVersion()} (${this.preset})`
 			],
 			optionalArgs = {
 				'--overwrite': this.overwrite === true,
@@ -67,6 +65,12 @@ class BuildInfo {
 				'--no-tar': this.tar === false,
 				'-s': this.skip
 			};
+
+		if ( this.workspace.getRevision() ) {
+			ret = ret.concat( [ '--revision', this.workspace.getRevision() ] );
+		}
+
+		ret = ret.concat( [ '--build-config', this.presetPath ] );
 
 		for ( let argName in optionalArgs ) {
 			if ( optionalArgs[ argName ] === true ) {
