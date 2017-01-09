@@ -61,7 +61,7 @@ describe( 'BuildGenerator', () => {
 		it( 'Supports revision in URL', () => {
 			let testUrl = 'https://github.com/WebSpellChecker/ckeditor-plugin-wsc.git#b67a28e0f89d9b2bbc6c9e22355e7da7d3fa0edd',
 				mock = {
-					verboseLog: sinon.stub()
+					logVerbose: sinon.stub()
 				};
 
 			return BuildGenerator.prototype._cloneExternalPlugin.call( mock, testUrl, 'wsc' )
