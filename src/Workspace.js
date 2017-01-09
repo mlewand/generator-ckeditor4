@@ -49,6 +49,12 @@ class Workspace {
 		return this._getPackageInfo().version;
 	}
 
+	/**
+	 * Returns a revision for workspace CKEditor instance.
+	 *
+	 * @returns {String/null} Revision or `null` if can not be determined.
+	 * @memberOf Workspace
+	 */
 	getRevision() {
 		let gitRevSync = require( 'git-rev-sync' );
 
