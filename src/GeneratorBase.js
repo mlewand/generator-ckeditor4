@@ -24,7 +24,7 @@ class GeneratorBase extends Generator {
 	 */
 	_getWorkspace() {
 		if ( !this.workspace ) {
-			this.workspace = new Workspace( this );
+			this.workspace = new Workspace( this.destinationPath() );
 		}
 
 		return this.workspace;

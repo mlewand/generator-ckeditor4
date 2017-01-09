@@ -12,11 +12,11 @@ class Workspace {
 
 	/**
 	 *
-	 * @param {any} generator Yoeman generator instance.
+	 * @param {String} path Path to CKEditor main directory.
 	 * @memberOf Workspace
 	 */
-	constructor( generator ) {
-		this.generator = generator;
+	constructor( path ) {
+		this._path = path;
 	}
 
 	/**
@@ -137,7 +137,7 @@ class Workspace {
 	 * @memberOf Workspace
 	 */
 	_getDirectoryPath() {
-		return this.generator.destinationPath();
+		return this._path;
 	}
 }
 
