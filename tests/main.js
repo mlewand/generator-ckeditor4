@@ -7,5 +7,6 @@ require( 'chai' ).use( require( 'chai-as-promised') );
 global.sinon = require( 'sinon' );
 global.proxyquire = require( 'proxyquire' );
 global.expect = require( 'chai' ).expect;
+global._ = require( 'lodash' );
 
 require( 'sinon-as-promised' );

@@ -20,66 +20,223 @@ class BuildGenerator extends GeneratorBase {
 				'won\'t be merged into main ckeditor.js file.',
 			type: Boolean,
 			default: false
-		} )
+		} );
 	}
 
 	dispatch() {
 		let that = this,
-			// We'll put compiled files into a temp dir first, to avoid a situation where output directory is in CKEditor directory,
-			// and builder includes built code which would lead to infinite process.
-			tmpOutputDir = fs.mkdtempSync( './../cke4build' ),
 			outputDir = './build',
-			overwrite = true;
+			overwrite = true,
+			preset = that.options.preset,
+			generatorBasePath = path.join( __dirname, '..', '..' ),
+			info = new BuildInfo( {
+				jarPath: path.join( generatorBasePath, 'ckbuilder', '2.3.1', 'ckbuilder.jar' ),
+				sourceDir: that._getWorkspace()._getDirectoryPath(),
+				targetDir: outputDir,
+				skip: !this.options.all,
+				preset: preset,
+				presetPath: path.join( generatorBasePath, 'presets', preset + '-build-config.js' ),
+				zip: false,
+				tar: false,
+				overwrite: true
+			}, that._getWorkspace() ),
+			missingPlugins;
 
 		return new Promise( ( resolve, reject ) => {
-				if ( fs.existsSync( outputDir ) && !overwrite ) {
-					reject( `Output directory "${outputDir}" already exists.` );
+				if ( !overwrite ) {
+					fs.exists( outputDir, exists => {
+						return exists ? resolve() : reject( new Error( `Output directory "${outputDir}" already exists.` ) );
+					} );
 				}
 
-				// Path to generator's main dir, where presets, and jar file can be found.
-				let preset = that.options.preset,
-					generatorBasePath = path.join( __dirname, '..', '..' ),
-					info = new BuildInfo( {
-						jarPath: path.join( generatorBasePath, 'ckbuilder', '2.3.1', 'ckbuilder.jar' ),
-						sourceDir: that._getWorkspace()._getDirectoryPath(),
-						targetDir: tmpOutputDir,
-						skip: !this.options.all,
-						preset: preset,
-						presetPath: path.join( generatorBasePath, 'presets', preset + '-build-config.js' ),
-						zip: false,
-						tar: false,
-						overwrite: true
-					}, that._getWorkspace() ),
-					output = '',
-					errOutput = '',
-					buildProcess;
+				resolve();
+			} )
+			.then( () => {
+				that._markStage( 'Checking preset plugins' );
+				return that._checkPlugins( that._getWorkspace(), info );
+			} )
+			.then( _missingPlugins => {
+				missingPlugins = _missingPlugins;
 
-				that._markStage( `Calling ckbuilder.jar to build ${preset} preset` );
+				if ( missingPlugins ) {
+					that.logVerbose( `Found missing plugins: ${Object.keys(missingPlugins)}` );
 
-				buildProcess = spawn( 'java', info.getArguments() );
-
-				buildProcess.stdout.on( 'data', data => that._onBuilderStdOut( String( data ) ) );
-				buildProcess.stderr.on( 'data', data => { errOutput += data; } );
-				buildProcess.on( 'error', ( error ) => {
-					reject( error.toString() );
-				} );
-				buildProcess.on( 'close', code => {
-					code === 0 ? resolve() : reject( `Invalid code returned: ${code}\n\nStderr:\n${errOutput}` );
-				} );
-
-			} ).then( () => {
-				that._markStage( `Moving temp build directory to ${outputDir}` );
-
-				if ( overwrite && fs.existsSync( outputDir ) ) {
-					rimraf.sync( outputDir );
+					return that.prompt( [ {
+							name: 'missingPlugins',
+							message: 'There are some missing plugins, would you like us to download them for you?',
+							type: 'confirm'
+						} ] )
+						.then( answers => {
+							if ( !answers.missingPlugins ) {
+								reject( new Error( 'Refused to install missing plugins.' ) );
+							} else {
+								return that._processMissingPlugins( missingPlugins );
+							}
+						} );
+				} else {
+					// No plugins missing, we're good to go.
+					resolve( null );
 				}
+			} )
+			.then( () => {
+				that._markStage( 'Ready to build' );
 
-				fs.renameSync( tmpOutputDir, outputDir );
-				that._markStage( 'Done!' );
-			} ).catch( ( error ) => {
-				that._markStage( 'Error occurred, removing temp directory.' );
-				that.log( error );
-				rimraf.sync( tmpOutputDir );
+				return that._doBuild( info );
+			} )
+			.then( () => {
+				that._markStage( 'Cleanup' );
+
+				if ( missingPlugins ) {
+					return Promise.all( Object.keys( missingPlugins ).map( name => that._removePlugin( name ) ) );
+				}
+			} )
+			.catch( err => {
+				that._markStage( 'Build failed' );
+				that.log( `\n\n${err}` );
+			} );
+	}
+
+	_removePlugin( pluginName ) {
+		return new Promise( ( resolve, reject ) => {
+			rimraf( path.join( 'plugins', pluginName ), error => {
+				return error ? reject( error ) : resolve();
+			} )
+		} );
+	}
+
+	/**
+	 * Performs a build for given BulidInfo.
+	 *
+	 * @param {BuildInfo} info
+	 * @returns Promise
+	 * @memberOf BuildGenerator
+	 */
+	_doBuild( info ) {
+		// We'll put compiled files into a temp dir first, to avoid a situation where output directory is in CKEditor directory,
+		// and builder includes built code which would lead to infinite process.
+		let tmpOutputDir = fs.mkdtempSync( './../cke4build' ),
+			outputDir = info.targetDir,
+			preset = info.preset,
+			that = this;
+
+		return new Promise( ( resolve, reject ) => {
+			// Path to generator's main dir, where presets, and jar file can be found.
+			let output = '',
+				errOutput = '',
+				buildProcess;
+
+			that._markStage( `Calling ckbuilder.jar to build ${preset} preset` );
+
+			info.targetDir = tmpOutputDir;
+
+			buildProcess = spawn( 'java', info.getArguments() );
+
+			info.targetDir = outputDir;
+
+			buildProcess.stdout.on( 'data', data => that._onBuilderStdOut( String( data ) ) );
+			buildProcess.stderr.on( 'data', data => {
+				errOutput += data;
+			} );
+			buildProcess.on( 'error', ( error ) => {
+				reject( error.toString() );
+			} );
+			buildProcess.on( 'close', code => {
+				return code === 0 ? resolve() : reject( `Invalid code returned: ${code}\n\nStderr:\n${errOutput}` );
+			} );
+
+		} ).then( () => {
+			that._markStage( `Moving temp build directory to ${outputDir}` );
+
+			if ( info.overwrite && fs.existsSync( outputDir ) ) {
+				rimraf.sync( outputDir );
+			}
+
+			fs.renameSync( tmpOutputDir, outputDir );
+			that._markStage( 'Done!' );
+		} ).catch( ( error ) => {
+			that._markStage( 'Error occurred, removing temp directory.' );
+			that.log( error );
+			rimraf.sync( tmpOutputDir );
+		} );
+	}
+
+	/**
+	 * Clones a plugin from external git repository.
+	 *
+	 *		this._cloneExternalPlugin( 'https://github.com/WebSpellChecker/ckeditor-plugin-wsc.git#b67a28e0f89d9b2bbc6c9e22355e7da7d3fa0edd', 'wsc' );
+	 *
+	 * @param {String} url URL git repository.
+	 * @param {String} name Plugin name.
+	 * @returns Promise
+	 * @memberOf BuildGenerator
+	 */
+	_cloneExternalPlugin( url, name ) {
+		let gitClone = require( 'git-clone' ),
+			gitUrlParse = require( 'git-url-parse' ),
+			parsedUrl = gitUrlParse( url ),
+			hash = parsedUrl.hash || undefined,
+			verboseLog = this.verboseLog;
+
+		return new Promise( ( resolve, reject ) => {
+			verboseLog( `Cloning ${parsedUrl.toString()} to ${name} directory` );
+
+			gitClone( parsedUrl.toString(), name, {
+				checkout: hash
+			}, ( err ) => {
+				return err ? reject( err ) : resolve();
+			} );
+		} );
+	}
+
+	_processMissingPlugins( missingPlugins ) {
+		let _ = require( 'lodash' );
+		this._markStage( 'Processing missing plugins' );
+		return Promise.all( _.toPairs( missingPlugins ).map( pair => this._processSinglePlugin( pair[ 0 ], pair[ 1 ] ) ) );
+	}
+
+
+	/**
+	 * @param {String} name Plugin name.
+	 * @param {any} value Value assigned in preset config. Most of the times it's simply `1` or a git repo URL string.
+	 * @returns Promise
+	 * @memberOf BuildGenerator
+	 */
+	_processSinglePlugin( name, value ) {
+		if ( typeof value === 'string' ) {
+			this.logVerbose( `${name} is a git URL` );
+			return this._cloneExternalPlugin( value, path.join( 'plugins', name ) );
+		} else {
+			return new Promise( ( resolve, reject ) => {
+				reject( new Error( `No handling for value ${value} yet - plugin ${name}` ) );
+			} );
+		}
+	}
+
+	/**
+	 * Checks if workspace plugin contains all the plugins, required in build info. If it doesn't it returns object with missing plugins, as
+	 * it may happen that build info adds some external plugins.
+	 *
+	 *		console.log( this._checkPlugins( workspace, info ) );
+	 *		// Logs: { scayt: 'https://github.com/WebSpellChecker/ckeditor-plugin-scayt.git#c1f60eaffea7a3078517ddc918d7ebc9bcf1aded', scayt: 1 }
+	 *
+	 * @param {Workspace} workspace
+	 * @param {BuildInfo} info
+	 * @returns Promise<Object/null> Object enumerating missing plugins, or `null` if all plugins are available.
+	 * @memberOf BuildGenerator
+	 */
+	_checkPlugins( workspace, info ) {
+		return Promise.all( [ workspace.getPlugins(), info.getPlugins() ] )
+			.then( ( results ) => {
+				let [ workspacePlugins, buildInfoPlugins ] = results,
+				_ = require( 'lodash' ),
+					ret;
+
+				ret = _.keys( buildInfoPlugins ).filter( name => workspacePlugins.indexOf( name ) === -1 )
+					.map( name => [ name, buildInfoPlugins[ name ] ] );
+
+				ret = _.fromPairs( ret );
+
+				return _.isEmpty( ret ) ? null : ret;
 			} );
 	}
 
