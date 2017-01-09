@@ -3,6 +3,8 @@
 
 This generator helps with some common CKEditor 4 tasks.
 
+Note that some commands rely on being launched in CKEditor 4 workspace directory.
+
 ## Issues
 
 ### Add
@@ -30,3 +32,11 @@ Opens a details for the given milestone.
 `yo ckeditor4:issue milestone 4.6.0`
 
 Milestone number might be skipped, then current version of CKEditor is used.
+
+### Build
+
+Builds CKEditor project.
+
+`yo ckeditor4:build --preset standard`
+
+`yo ckeditor4:build --preset basic --all`
