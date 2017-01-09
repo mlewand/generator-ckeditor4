@@ -8,6 +8,15 @@ var Workspace = require( './Workspace' ),
  * @extends {Generator}
  */
 class GeneratorBase extends Generator {
+	constructor( args, opts ) {
+		super( args, opts );
+
+		this.option( 'v', {
+			name: 'verbose',
+			description: 'If set will produce more verbose logs'
+		} );
+	}
+
 	/**
 	 * @returns {Workspace} An instance describing CKEditor instance.
 	 * @member IssueGenerator
@@ -18,6 +27,18 @@ class GeneratorBase extends Generator {
 		}
 
 		return this.workspace;
+	}
+
+	/**
+	 * Logs a message that will only be displayed if verbose flag was passed.
+	 *
+	 * @param {mixed} msg
+	 * @memberOf GeneratorBase
+	 */
+	logVerbose( msg ) {
+		if ( this.options.v ) {
+			this.log( msg );
+		}
 	}
 }
 
