@@ -68,7 +68,9 @@ class BuildGenerator extends GeneratorBase {
 						} ] )
 						.then( answers => {
 							if ( !answers.missingPlugins ) {
-								reject( new Error( 'Refused to install missing plugins.' ) );
+								return new Promise( ( resolve, reject ) => {
+									reject( new Error( 'Refused to install missing plugins.' ) );
+								} );
 							} else {
 								return that._processMissingPlugins( missingPlugins );
 							}
@@ -94,11 +96,13 @@ class BuildGenerator extends GeneratorBase {
 			} )
 			.catch( err => {
 				that._markStage( 'Build failed' );
-				that.log( `\n\n${err}` );
+				that.log( `\n\n${err.stack}` );
 			} );
 	}
 
 	_removePlugin( pluginName ) {
+		this.logVerbose( `Removing extra plugin: ${pluginName}` );
+
 		return new Promise( ( resolve, reject ) => {
 			rimraf( path.join( 'plugins', pluginName ), error => {
 				return error ? reject( error ) : resolve();
@@ -177,10 +181,10 @@ class BuildGenerator extends GeneratorBase {
 			gitUrlParse = require( 'git-url-parse' ),
 			parsedUrl = gitUrlParse( url ),
 			hash = parsedUrl.hash || undefined,
-			verboseLog = this.verboseLog;
+			that = this;
 
 		return new Promise( ( resolve, reject ) => {
-			verboseLog( `Cloning ${parsedUrl.toString()} to ${name} directory` );
+			that.logVerbose( `Cloning ${parsedUrl.toString()} to ${name} directory` );
 
 			gitClone( parsedUrl.toString(), name, {
 				checkout: hash
