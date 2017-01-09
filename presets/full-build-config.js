@@ -72,7 +72,7 @@ var CKBUILDER_CONFIG = {
 		removeformat: 1,
 		resize: 1,
 		save: 1,
-		scayt: 1,
+		scayt: 'https://github.com/WebSpellChecker/ckeditor-plugin-scayt.git#c1f60eaffea7a3078517ddc918d7ebc9bcf1aded',
 		selectall: 1,
 		showblocks: 1,
 		showborders: 1,
@@ -86,7 +86,7 @@ var CKBUILDER_CONFIG = {
 		templates: 1,
 		toolbar: 1,
 		undo: 1,
-		wsc: 1,
+		wsc: 'https://github.com/WebSpellChecker/ckeditor-plugin-wsc.git#b67a28e0f89d9b2bbc6c9e22355e7da7d3fa0edd',
 		wysiwygarea: 1
 	}
 };
