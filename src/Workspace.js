@@ -52,7 +52,17 @@ class Workspace {
 	getRevision() {
 		let gitRevSync = require( 'git-rev-sync' );
 
-		return gitRevSync.short( this._getDirectoryPath() );
+		try{
+			return gitRevSync.short( this._getDirectoryPath() );
+		} catch ( e ) {
+			if ( e instanceof Error && e.toString().match( /no git repository found/ ) ) {
+				// Return null if it's not a git repo, and hash can not be determined.
+				return null;
+			} else {
+				// Still unhandled.
+				throw e;
+			}
+		}
 	}
 
 	/**
