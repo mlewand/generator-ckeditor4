@@ -75,7 +75,9 @@ class BuildGenerator extends GeneratorBase {
 						} );
 				} else {
 					// No plugins missing, we're good to go.
-					resolve( null );
+					return new Promise( ( resolve, reject ) => {
+						resolve( null );
+					} );
 				}
 			} )
 			.then( () => {
