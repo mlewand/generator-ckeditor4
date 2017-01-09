@@ -101,7 +101,7 @@ describe( 'IssueGenerator', () => {
 			return yeomanTest.run( path.join( path.resolve( __dirname ), testedModulePath, '..' ) )
 				.withArguments( [ 'milestone', '4.6.2' ] )
 				.then( function() {
-					expect( openStub ).to.be.calledWith( 'http://dev.ckeditor.com/milestone/CKEditor%204.6.2' );
+					expect( openStub ).to.be.calledWith( 'http://dev.ckeditor.com/query?group=status&milestone=CKEditor+4.6.2' );
 					expect( openStub ).to.be.calledOnce;
 				} );
 		} );
@@ -110,7 +110,7 @@ describe( 'IssueGenerator', () => {
 			return yeomanTest.run( path.join( path.resolve( __dirname ), testedModulePath, '..' ) )
 				.withArguments( [ 'milestone' ] )
 				.then( function() {
-					expect( openStub ).to.be.calledWith( 'http://dev.ckeditor.com/milestone/CKEditor%204.4.1' );
+					expect( openStub ).to.be.calledWith( 'http://dev.ckeditor.com/query?group=status&milestone=CKEditor+4.4.1' );
 					expect( openStub ).to.be.calledOnce;
 				} );
 		} );
