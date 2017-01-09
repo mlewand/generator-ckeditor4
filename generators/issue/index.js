@@ -72,7 +72,7 @@ class IssueGenerator extends GeneratorBase {
 			throw new Error( `Invalid version "${version}" given.` );
 		}
 
-		open( `http://dev.ckeditor.com/milestone/CKEditor%20${version}` );
+		open( `http://dev.ckeditor.com/query?group=status&milestone=CKEditor+${version}` );
 	}
 }
 
