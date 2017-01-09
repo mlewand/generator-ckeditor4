@@ -16,6 +16,13 @@ class GeneratorBase extends Generator {
 			alias: 'v',
 			description: 'If set will produce more verbose logs'
 		} );
+
+		// #7
+		this.option( 'dev', {
+			name: 'dev',
+			description: 'Whether to use editor in env CKEDITOR_DEV_PATH variable rathen than cwd',
+			default: false
+		} );
 	}
 
 	/**
@@ -24,7 +31,7 @@ class GeneratorBase extends Generator {
 	 */
 	_getWorkspace() {
 		if ( !this.workspace ) {
-			this.workspace = new Workspace( this.destinationPath() );
+			this.workspace = new Workspace( this.options.dev ? process.env.CKEDITOR_DEV_PATH : this.destinationPath() );
 		}
 
 		return this.workspace;
