@@ -11,8 +11,9 @@ class GeneratorBase extends Generator {
 	constructor( args, opts ) {
 		super( args, opts );
 
-		this.option( 'v', {
+		this.option( 'verbose', {
 			name: 'verbose',
+			alias: 'v',
 			description: 'If set will produce more verbose logs'
 		} );
 	}
@@ -36,7 +37,7 @@ class GeneratorBase extends Generator {
 	 * @memberOf GeneratorBase
 	 */
 	logVerbose( msg ) {
-		if ( this.options.v ) {
+		if ( this.options.verbose ) {
 			this.log( msg );
 		}
 	}
