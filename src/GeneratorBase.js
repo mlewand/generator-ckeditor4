@@ -31,7 +31,7 @@ class GeneratorBase extends Generator {
 	}
 
 	/**
-	 * Logs a message that will only be displayed if verbose flag was passed.
+	 * Logs a message that will only be displayed if the verbose flag was passed.
 	 *
 	 * @param {mixed} msg
 	 * @memberOf GeneratorBase
