@@ -1,3 +1,5 @@
+let path = require( 'path' );
+
 /**
  * A class describing CKEditor 4 workspace.
  *
@@ -58,7 +60,7 @@ class Workspace {
 	getRevision() {
 		let gitRevSync = require( 'git-rev-sync' );
 
-		try{
+		try {
 			return gitRevSync.short( this._getDirectoryPath() );
 		} catch ( e ) {
 			if ( e instanceof Error && e.toString().match( /no git repository found/ ) ) {
@@ -121,8 +123,6 @@ class Workspace {
 	 * @memberOf Workspace
 	 */
 	_getPackageInfo() {
-		let path = require( 'path' );
-
 		if ( this._packageJson ) {
 			return this._packageJson;
 		}
@@ -138,6 +138,35 @@ class Workspace {
 	 */
 	_getDirectoryPath() {
 		return this._path;
+	}
+
+	/**
+	 * Based on given `startPath` tries to find closest main CKEditor 4 directory.
+	 *
+	 * In essence this method will start looking for CKEditor 4 directory structure, starting with `startPath` and
+	 * going thru it's parents.
+	 *
+	 * @param {String} startPath
+	 * @returns {String/null} Best matched directory, or `null` if none succeed.
+	 * @memberOf Workspace
+	 */
+	_guessWorkspaceRoot( startPath ) {
+		let fs = require( 'fs' ),
+			parsed = path.parse( startPath ),
+			directories = parsed.dir.substr( parsed.root.length ).split( path.sep ),
+			dirHasCKe = dirPath => fs.existsSync( path.join( dirPath, 'ckeditor.js' ) ) && fs.existsSync( path.join( dirPath, 'plugins' ) );
+
+		directories.push( parsed.name )
+
+		// NOTE: initializing with directories.length instead of decreasing it by one is **intentional** here.
+		for ( let i = 0; i <= directories.length; i++ ) {
+			let curDir = path.join( parsed.root, ...directories.slice( 0, directories.length - i ) );
+			if ( dirHasCKe( curDir ) ) {
+				return curDir;
+			}
+		}
+
+		return null;
 	}
 }
 
