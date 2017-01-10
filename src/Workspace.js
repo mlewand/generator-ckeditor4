@@ -18,7 +18,11 @@ class Workspace {
 	 * @memberOf Workspace
 	 */
 	constructor( path ) {
-		this._path = path;
+		this._path = this._guessWorkspaceRoot( path );
+
+		if ( this._path === null ) {
+			throw new Error( `Sorry, can't locate CKEditor 4 in "${path}" path.` );
+		}
 	}
 
 	/**

@@ -8,12 +8,36 @@ describe( 'Workspace', () => {
 	let mock;
 
 	beforeEach( () => {
+		// We need to stub _guessWorkspaceRoot, otherwise constructor will validate given path and throw an error.
+		sinon.stub( Workspace.prototype, '_guessWorkspaceRoot' ).returns( '/foo/bar' );
+
 		mock = new Workspace( '/foo/bar' );
 	} );
 
+
+	afterEach(() => {
+		if ( Workspace.prototype._guessWorkspaceRoot.restore ) {
+			Workspace.prototype._guessWorkspaceRoot.restore();
+		}
+	});
+
+
 	describe( 'constructor', () => {
-		it( 'sets path', () => {
-			mock._path = '/foo/bar';
+		it( 'sets path with ret from _guessWorkspaceRoot', () => {
+			// sinon.stub( Workspace.prototype, '_guessWorkspaceRoot' ).returns( '/this/editor/surely/exists' );
+			Workspace.prototype._guessWorkspaceRoot.returns( '/this/editor/surely/exists' );
+
+			mock = new Workspace( '/non/existing/path' );
+
+			// Workspace.prototype._guessWorkspaceRoot.restore();
+
+			// expect( mock._path ).to.be.equal( '/this/editor/surely/exists' );
+		} );
+
+		it( 'throws when _guessWorkspaceRoot returns invalid path', () => {
+			Workspace.prototype._guessWorkspaceRoot.returns( null );
+
+			expect( () => new Workspace( '/non/existing/path' ) ).to.throw( Error, 'Sorry, can\'t locate CKEditor 4 in "/non/existing/path" path.' );
 		} );
 	} );
 
@@ -53,6 +77,13 @@ describe( 'Workspace', () => {
 
 
 	describe( '_guessWorkspaceRoot()', () => {
+
+		beforeEach(() => {
+			// Here we want to test the real thing!
+			Workspace.prototype._guessWorkspaceRoot.restore();
+		});
+
+
 		let topMostDir = path.join( __dirname, '_fixtures', 'Workspace', '_guessWorkspaceRoot', 'topMostCke' ),
 			innerMostDir = path.join( topMostDir, 'subdir', 'innerMostCke' );
 
