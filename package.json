@@ -3,8 +3,8 @@
   "version": "0.1.2",
   "description": "Yeoman generator for CKEditor 4",
   "scripts": {
-    "test": "./node_modules/.bin/mocha \"tests/main.js\" \"tests/**/*.js\" --use-strict --reporter list",
-    "coverage": "./node_modules/.bin/istanbul cover ./node_modules/mocha/bin/_mocha \"tests/main.js\" \"tests/**/*.js\" --use-strict --reporter list"
+    "test": "./node_modules/.bin/mocha \"tests/main.js\" \"tests/**/*.test.js\" --use-strict --reporter list",
+    "coverage": "./node_modules/.bin/istanbul cover ./node_modules/mocha/bin/_mocha \"tests/main.js\" \"tests/**/*.test.js\" --use-strict --reporter list"
   },
   "repository": {
     "type": "git",
