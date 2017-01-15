@@ -39,12 +39,18 @@ class BuildGenerator extends GeneratorBase {
 			type: Number,
 			default: 0
 		} );
+
+		this.option( 'overwrite', {
+			description: 'Whether to overwrite output directory if already exists.',
+			type: Boolean,
+			default: true
+		} );
 	}
 
 	dispatch() {
 		let that = this,
 			outputDir = this.options.outputDir,
-			overwrite = true,
+			overwrite = this.options.overwrite,
 			preset = that.options.preset,
 			generatorBasePath = path.join( __dirname, '..', '..' ),
 			info = new BuildInfo( {
@@ -57,7 +63,7 @@ class BuildGenerator extends GeneratorBase {
 				presetPath: path.join( generatorBasePath, 'presets', preset + '-build-config.js' ),
 				zip: false,
 				tar: false,
-				overwrite: true
+				overwrite: overwrite
 			}, that._getWorkspace() ),
 			missingPlugins;
 
@@ -66,9 +72,9 @@ class BuildGenerator extends GeneratorBase {
 					fs.exists( outputDir, exists => {
 						return exists ? resolve() : reject( new Error( `Output directory "${outputDir}" already exists.` ) );
 					} );
+				} else {
+					resolve();
 				}
-
-				resolve();
 			} )
 			.then( () => {
 				that._markStage( 'Checking preset plugins' );
@@ -112,10 +118,6 @@ class BuildGenerator extends GeneratorBase {
 				if ( missingPlugins ) {
 					return Promise.all( Object.keys( missingPlugins ).map( name => that._removePlugin( name ) ) );
 				}
-			} )
-			.catch( err => {
-				that._markStage( 'Build failed' );
-				that.log( `\n\n${err.stack}` );
 			} );
 	}
 
@@ -123,7 +125,7 @@ class BuildGenerator extends GeneratorBase {
 		this.logVerbose( `Removing extra plugin: ${pluginName}` );
 
 		return new Promise( ( resolve, reject ) => {
-			rimraf( path.join( 'plugins', pluginName ), error => {
+			rimraf( path.join( this._getWorkspace().getPluginsPath(), pluginName ), error => {
 				return error ? reject( error ) : resolve();
 			} );
 		} );
@@ -207,9 +209,11 @@ class BuildGenerator extends GeneratorBase {
 			that = this;
 
 		return new Promise( ( resolve, reject ) => {
-			that.logVerbose( `Cloning ${parsedUrl.toString()} to ${name} directory` );
+			let targetPath = path.join( this._getWorkspace().getPluginsPath(), name );
+			that.logVerbose( `Cloning ${parsedUrl.toString()} to ${targetPath} directory` );
 
-			gitClone( parsedUrl.toString(), name, {
+
+			gitClone( parsedUrl.toString(), targetPath, {
 				checkout: hash
 			}, ( err ) => {
 				return err ? reject( err ) : resolve();
@@ -233,7 +237,7 @@ class BuildGenerator extends GeneratorBase {
 	_processSinglePlugin( name, value ) {
 		if ( typeof value === 'string' ) {
 			this.logVerbose( `${name} is a git URL` );
-			return this._cloneExternalPlugin( value, path.join( 'plugins', name ) );
+			return this._cloneExternalPlugin( value, name );
 		} else {
 			return new Promise( ( resolve, reject ) => {
 				reject( new Error( `No handling for value ${value} yet - plugin ${name}` ) );

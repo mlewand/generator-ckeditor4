@@ -86,7 +86,7 @@ class Workspace {
 	getPlugins() {
 		let fs = require( 'fs' ),
 			path = require( 'path' ),
-			pluginsDir = path.join( this._getDirectoryPath(), 'plugins' );
+			pluginsDir = this.getPluginsPath();
 
 		return new Promise( ( resolve, reject ) => {
 			fs.readdir( pluginsDir, ( err, files ) => {
@@ -118,6 +118,14 @@ class Workspace {
 				}
 			} );
 		} );
+	}
+
+	/**
+	 * @returns {String} Path to the plugins directory.
+	 * @memberOf Workspace
+	 */
+	getPluginsPath() {
+		return path.join( this._getDirectoryPath(), 'plugins' );
 	}
 
 	/**
