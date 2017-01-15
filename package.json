@@ -33,9 +33,11 @@
   "devDependencies": {
     "chai": "^3.5.0",
     "chai-as-promised": "^6.0.0",
+    "fs-promise": "^1.0.0",
     "istanbul": "^0.4.5",
     "mocha": "^3.2.0",
     "proxyquire": "^1.7.10",
+    "recursive-readdir": "^2.1.0",
     "sinon": "^1.17.7",
     "sinon-as-promised": "^4.0.2",
     "sinon-chai": "^2.8.0",
