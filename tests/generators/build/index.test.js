@@ -1,6 +1,6 @@
-
 let path = require( 'path' ),
-	yeomanTeist = require( 'yeoman-test' ),
+	yeomanTest = require( 'yeoman-test' ),
+	rimraf = require( 'rimraf' ),
 	gitCloneStub = sinon.spy( function( url, path, opts, callback ) {
 		callback();
 	} ),
@@ -12,6 +12,8 @@ proxyquire( testedModulePathFromRoot, {
 } );
 
 let BuildGenerator = require( testedModulePath );
+
+let compareDirectoryContents = require( '../../_helpers/compareDirectories' );
 
 describe( 'BuildGenerator', () => {
 	beforeEach( () => {
@@ -74,5 +76,88 @@ describe( 'BuildGenerator', () => {
 					return sinon.stub().resolves();
 				} );
 		} );
+	} );
+
+
+	describe( 'integration tests', function() {
+		// Each integration test might take a little while...
+		this.timeout( 20000 );
+		let ckePath = path.join( __dirname, '_fixtures', 'microcke' ),
+			generatorPath = path.join( __dirname, '..', '..', '..', 'generators', 'build' );
+
+		it( 'Makes a valid build', () => {
+			let outputPath = path.join( ckePath, '..', 'build' ),
+				expectedBuildPath = path.join( ckePath, '..', 'microbuilt' );
+
+			// Make sure that build directory does not exist.
+			return new Promise( ( resolve, reject ) => {
+					rimraf( outputPath, err => {
+						return err ? reject( err ) : resolve();
+					} );
+				} )
+				.then( () => {
+					let context = yeomanTest.run( generatorPath );
+
+					context.on( 'ready', ( generator ) => {
+						// We need to patch generator ever so slightly, so it returns desired workspace path.
+						generator._getWorkspace()._getDirectoryPath = sinon.stub().returns( ckePath );
+						generator._getWorkspace().getRevision = sinon.stub().returns( '2746a2b' );
+						generator._getWorkspace()._path = ckePath;
+
+						// We want to make real logs, so we can see in the console what is going on.
+						// generator.log = console.log;
+					} );
+
+					context.withOptions( {
+						verbose: true,
+						preset: 'micro',
+						outputDir: outputPath,
+						timestamp: 1489100400
+					} );
+
+					return context;
+				} ).then( () => {
+					return compareDirectoryContents( expectedBuildPath, outputPath );
+				} );
+		} );
+
+		it( 'Makes a valid unminified build', () => {
+			let outputPath = path.join( ckePath, '..', 'build-source' ),
+				expectedBuildPath = path.join( ckePath, '..', 'microbuilt-source' );
+
+			// Make sure that build directory does not exist.
+			return new Promise( ( resolve, reject ) => {
+					rimraf( outputPath, err => {
+						return err ? reject( err ) : resolve();
+					} );
+				} )
+				.then( () => {
+					let context = yeomanTest.run( generatorPath );
+
+					context.on( 'ready', ( generator ) => {
+						// We need to patch generator ever so slightly, so it returns desired workspace path.
+						generator._getWorkspace()._getDirectoryPath = sinon.stub().returns( ckePath );
+						generator._getWorkspace().getRevision = sinon.stub().returns( '8085b10' );
+
+						generator._getWorkspace()._path = ckePath;
+
+						// We want to make real logs, so we can see in the console what is going on.
+						// generator.log = console.log;
+					} );
+
+					context.withOptions( {
+						verbose: true,
+						minify: false,
+						preset: 'micro',
+						outputDir: outputPath,
+						timestamp: 1489100400
+					} );
+
+					return context;
+				} ).then( () => {
+					return compareDirectoryContents( expectedBuildPath, outputPath );
+				} );
+		} );
+
 	} );
 } );

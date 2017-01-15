@@ -2,7 +2,6 @@
 
 require( 'chai' ).use( require( 'sinon-chai' ) );
 require( 'chai' ).use( require( 'chai-as-promised' ) );
-require( 'chai' ).use( require( 'chai-fs' ) );
 
 global.path = require( 'path' );
 global.sinon = require( 'sinon' );
