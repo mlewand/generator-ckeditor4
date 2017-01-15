@@ -15,11 +15,11 @@ describe( 'Workspace', () => {
 	} );
 
 
-	afterEach(() => {
+	afterEach( () => {
 		if ( Workspace.prototype._guessWorkspaceRoot.restore ) {
 			Workspace.prototype._guessWorkspaceRoot.restore();
 		}
-	});
+	} );
 
 
 	describe( 'constructor', () => {
@@ -42,10 +42,19 @@ describe( 'Workspace', () => {
 	} );
 
 	describe( 'getPlugins()', () => {
-		it( 'Returns correct value', () => {
-			let workspaceStub = {
-				_getDirectoryPath: sinon.stub().returns( path.join( __dirname, '_fixtures', 'Workspace', 'getPlugins' ) )
+		let workspaceStub;
+
+		beforeEach( () => {
+			workspaceStub = {
+				_getDirectoryPath: sinon.stub().returns( path.join( __dirname, '_fixtures' ) ),
+				getPluginsPath: sinon.spy( function() {
+					return path.join( this._getDirectoryPath(), 'plugins' );
+				} )
 			};
+		} );
+
+		it( 'Returns correct value', () => {
+			workspaceStub._getDirectoryPath = sinon.stub().returns( path.join( __dirname, '_fixtures', 'Workspace', 'getPlugins' ) );
 
 			return Workspace.prototype.getPlugins.call( workspaceStub )
 				.then( ( plugins ) => {
@@ -55,9 +64,6 @@ describe( 'Workspace', () => {
 		} );
 
 		it( 'Returns empty array with nonexisting plugins dir', () => {
-			let workspaceStub = {
-				_getDirectoryPath: sinon.stub().returns( path.join( __dirname, '_fixtures' ) )
-			};
 
 			return Workspace.prototype.getPlugins.call( workspaceStub )
 				.then( ( plugins ) => {
@@ -78,10 +84,10 @@ describe( 'Workspace', () => {
 
 	describe( '_guessWorkspaceRoot()', () => {
 
-		beforeEach(() => {
+		beforeEach( () => {
 			// Here we want to test the real thing!
 			Workspace.prototype._guessWorkspaceRoot.restore();
-		});
+		} );
 
 
 		let topMostDir = path.join( __dirname, '_fixtures', 'Workspace', '_guessWorkspaceRoot', 'topMostCke' ),
