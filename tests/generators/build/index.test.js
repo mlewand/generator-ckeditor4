@@ -79,82 +79,79 @@ describe( 'BuildGenerator', () => {
 	} );
 
 
-	describe( 'integration tests', function() {
+	describe.only( 'integration tests', function() {
 		// Each integration test might take a little while...
 		this.timeout( 20000 );
 		let ckePath = path.join( __dirname, '_fixtures', 'microcke' ),
-			generatorPath = path.join( __dirname, '..', '..', '..', 'generators', 'build' );
+			generatorPath = path.join( __dirname, '..', '..', '..', 'generators', 'build' ),
+			revisionStub,
+			options,
+			outputPath,
+			expectedBuildPath;
 
-		it( 'Makes a valid build', () => {
-			let outputPath = path.join( ckePath, '..', 'build' ),
-				expectedBuildPath = path.join( ckePath, '..', 'microbuilt' );
+		beforeEach( () => {
+			// Reset variables that might get overridden in a test case.
+			outputPath = path.join( ckePath, '..', 'build' );
+			expectedBuildPath = path.join( ckePath, '..', 'microbuilt' );
+			revisionStub = '2746a2b';
 
-			// Make sure that build directory does not exist.
+			options = {
+				verbose: true,
+				preset: 'micro',
+				outputDir: outputPath,
+				timestamp: 1489100400
+			};
+		} );
+
+		afterEach( ( done ) => {
+			// Clean after yourself!
+			rimraf( outputPath, done );
+		} );
+
+		function testIntegrationBuild() {
+			// First: remove previous build if any.
 			return new Promise( ( resolve, reject ) => {
 					rimraf( outputPath, err => {
 						return err ? reject( err ) : resolve();
 					} );
 				} )
 				.then( () => {
+					// Then Mock yoeman instance.
 					let context = yeomanTest.run( generatorPath );
 
 					context.on( 'ready', ( generator ) => {
 						// We need to patch generator ever so slightly, so it returns desired workspace path.
 						generator._getWorkspace()._getDirectoryPath = sinon.stub().returns( ckePath );
-						generator._getWorkspace().getRevision = sinon.stub().returns( '2746a2b' );
+						generator._getWorkspace().getRevision = sinon.stub().returns( revisionStub );
 						generator._getWorkspace()._path = ckePath;
 
-						// We want to make real logs, so we can see in the console what is going on.
+						// If we want to make real logs, so we can see in the console what is going on.
 						// generator.log = console.log;
 					} );
 
-					context.withOptions( {
-						verbose: true,
-						preset: 'micro',
-						outputDir: outputPath,
-						timestamp: 1489100400
-					} );
+					context.withOptions( options );
 
 					return context;
-				} ).then( () => {
+				} );
+		}
+
+		it( 'Makes a valid build', () => {
+			// Make sure that build directory does not exist.
+			return testIntegrationBuild()
+				.then( () => {
 					return compareDirectoryContents( expectedBuildPath, outputPath );
 				} );
 		} );
 
 		it( 'Makes a valid unminified build', () => {
-			let outputPath = path.join( ckePath, '..', 'build-source' ),
-				expectedBuildPath = path.join( ckePath, '..', 'microbuilt-source' );
+			outputPath = path.join( ckePath, '..', 'build-source' );
+			expectedBuildPath = path.join( ckePath, '..', 'microbuilt-source' );
+			options.minify = false;
+			options.outputDir = outputPath;
+			revisionStub = '8085b10';
 
-			// Make sure that build directory does not exist.
-			return new Promise( ( resolve, reject ) => {
-					rimraf( outputPath, err => {
-						return err ? reject( err ) : resolve();
-					} );
-				} )
+			return testIntegrationBuild()
 				.then( () => {
-					let context = yeomanTest.run( generatorPath );
-
-					context.on( 'ready', ( generator ) => {
-						// We need to patch generator ever so slightly, so it returns desired workspace path.
-						generator._getWorkspace()._getDirectoryPath = sinon.stub().returns( ckePath );
-						generator._getWorkspace().getRevision = sinon.stub().returns( '8085b10' );
-
-						generator._getWorkspace()._path = ckePath;
-
-						// We want to make real logs, so we can see in the console what is going on.
-						// generator.log = console.log;
-					} );
-
-					context.withOptions( {
-						verbose: true,
-						minify: false,
-						preset: 'micro',
-						outputDir: outputPath,
-						timestamp: 1489100400
-					} );
-
-					return context;
-				} ).then( () => {
 					return compareDirectoryContents( expectedBuildPath, outputPath );
 				} );
 		} );

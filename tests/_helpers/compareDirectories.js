@@ -34,6 +34,7 @@
 			// Return unique file paths based on both directories.
 			return new Set( values[ 0 ].concat( values[ 1 ] ) );
 		} ).then( paths => {
+			// @todo: check if expected/actual exists, as now it will just tell that file content differ.
 			let decorate = ( directoryType, filePath ) => fileContent => ( {
 					content: fileContent,
 					dirType: directoryType,
