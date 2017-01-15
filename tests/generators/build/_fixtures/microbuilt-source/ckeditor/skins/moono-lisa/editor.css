@@ -1314,15 +1314,15 @@ legend.cke_voice_label
 {
 	display: none;
 }
-.cke_button__bold_icon {background: url(icons.png?t=H0EK) no-repeat 0 -0px !important;}
-.cke_button__italic_icon {background: url(icons.png?t=H0EK) no-repeat 0 -24px !important;}
-.cke_button__strike_icon {background: url(icons.png?t=H0EK) no-repeat 0 -48px !important;}
-.cke_button__subscript_icon {background: url(icons.png?t=H0EK) no-repeat 0 -72px !important;}
-.cke_button__superscript_icon {background: url(icons.png?t=H0EK) no-repeat 0 -96px !important;}
-.cke_button__underline_icon {background: url(icons.png?t=H0EK) no-repeat 0 -120px !important;}
-.cke_hidpi .cke_button__bold_icon {background: url(icons_hidpi.png?t=H0EK) no-repeat 0 -0px !important;background-size: 16px !important;}
-.cke_hidpi .cke_button__italic_icon {background: url(icons_hidpi.png?t=H0EK) no-repeat 0 -24px !important;background-size: 16px !important;}
-.cke_hidpi .cke_button__strike_icon {background: url(icons_hidpi.png?t=H0EK) no-repeat 0 -48px !important;background-size: 16px !important;}
-.cke_hidpi .cke_button__subscript_icon {background: url(icons_hidpi.png?t=H0EK) no-repeat 0 -72px !important;background-size: 16px !important;}
-.cke_hidpi .cke_button__superscript_icon {background: url(icons_hidpi.png?t=H0EK) no-repeat 0 -96px !important;background-size: 16px !important;}
-.cke_hidpi .cke_button__underline_icon {background: url(icons_hidpi.png?t=H0EK) no-repeat 0 -120px !important;background-size: 16px !important;}
+.cke_button__bold_icon {background: url(icons.png?t=H29N) no-repeat 0 -0px !important;}
+.cke_button__italic_icon {background: url(icons.png?t=H29N) no-repeat 0 -24px !important;}
+.cke_button__strike_icon {background: url(icons.png?t=H29N) no-repeat 0 -48px !important;}
+.cke_button__subscript_icon {background: url(icons.png?t=H29N) no-repeat 0 -72px !important;}
+.cke_button__superscript_icon {background: url(icons.png?t=H29N) no-repeat 0 -96px !important;}
+.cke_button__underline_icon {background: url(icons.png?t=H29N) no-repeat 0 -120px !important;}
+.cke_hidpi .cke_button__bold_icon {background: url(icons_hidpi.png?t=H29N) no-repeat 0 -0px !important;background-size: 16px !important;}
+.cke_hidpi .cke_button__italic_icon {background: url(icons_hidpi.png?t=H29N) no-repeat 0 -24px !important;background-size: 16px !important;}
+.cke_hidpi .cke_button__strike_icon {background: url(icons_hidpi.png?t=H29N) no-repeat 0 -48px !important;background-size: 16px !important;}
+.cke_hidpi .cke_button__subscript_icon {background: url(icons_hidpi.png?t=H29N) no-repeat 0 -72px !important;background-size: 16px !important;}
+.cke_hidpi .cke_button__superscript_icon {background: url(icons_hidpi.png?t=H29N) no-repeat 0 -96px !important;background-size: 16px !important;}
+.cke_hidpi .cke_button__underline_icon {background: url(icons_hidpi.png?t=H29N) no-repeat 0 -120px !important;background-size: 16px !important;}
