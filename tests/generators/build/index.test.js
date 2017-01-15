@@ -79,10 +79,10 @@ describe( 'BuildGenerator', () => {
 	} );
 
 
-	describe.only( 'integration tests', function() {
+	describe( 'integration tests', function() {
 		// Each integration test might take a little while...
 		this.timeout( 20000 );
-		let ckePath = path.join( __dirname, '_fixtures', 'microcke' ),
+		let ckePath = path.join( __dirname, '_fixtures', 'source' ),
 			generatorPath = path.join( __dirname, '..', '..', '..', 'generators', 'build' ),
 			revisionStub,
 			options,
@@ -91,8 +91,8 @@ describe( 'BuildGenerator', () => {
 
 		beforeEach( () => {
 			// Reset variables that might get overridden in a test case.
-			outputPath = path.join( ckePath, '..', 'build' );
-			expectedBuildPath = path.join( ckePath, '..', 'microbuilt' );
+			outputPath = path.join( ckePath, '..', 'actual' );
+			expectedBuildPath = path.join( ckePath, '..', 'expected' );
 			revisionStub = '2746a2b';
 
 			options = {
@@ -144,8 +144,8 @@ describe( 'BuildGenerator', () => {
 		} );
 
 		it( 'Makes a valid unminified build', () => {
-			outputPath = path.join( ckePath, '..', 'build-source' );
-			expectedBuildPath = path.join( ckePath, '..', 'microbuilt-source' );
+			outputPath = path.join( ckePath, '..', 'actual-unminified' );
+			expectedBuildPath = path.join( ckePath, '..', 'expected-unminified' );
 			options.minify = false;
 			options.outputDir = outputPath;
 			revisionStub = '8085b10';

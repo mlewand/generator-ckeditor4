@@ -2,5 +2,5 @@ node_modules
 .vscode
 yarn.lock
 coverage
-tests/generators/build/_fixtures/build
-tests/generators/build/_fixtures/build-source
+tests/generators/build/_fixtures/actual
+tests/generators/build/_fixtures/actual-unminified
