@@ -31,6 +31,13 @@ class BuildInfo {
 		this.tar = info.tar !== undefined ? Boolean( info.tar ) : true;
 
 		/**
+		 * Whether to minify js and css files.
+		 *
+		 * @property {Boolean} [minify=true]
+		 */
+		this.minify = info.minify !== undefined ? Boolean( info.minify ) : true;
+
+		/**
 		 * Whether plugins and skins not required by given preset, but available in source, should be included into the distribution. With
 		 * `skip` set to `false` you'll create so called full distribution.
 		 *
@@ -68,6 +75,10 @@ class BuildInfo {
 
 		if ( this.workspace.getRevision() ) {
 			ret = ret.concat( [ '--revision', this.workspace.getRevision() ] );
+		}
+
+		if ( !this.minify ) {
+			ret.push( '--leave-js-unminified', '--leave-css-unminified' );
 		}
 
 		ret = ret.concat( [ '--build-config', this.presetPath ] );

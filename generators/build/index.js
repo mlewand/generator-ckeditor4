@@ -21,11 +21,29 @@ class BuildGenerator extends GeneratorBase {
 			type: Boolean,
 			default: false
 		} );
+
+		this.option( 'minify', {
+			description: 'Whether js and css files should be minified.',
+			type: Boolean,
+			default: true
+		} );
+
+		this.option( 'outputDir', {
+			description: 'Directory, where the build will be put.',
+			type: String,
+			default: './build'
+		} );
+
+		this.option( 'timestamp', {
+			description: 'Unix time used for custom timestamp markers. Useful for repetitive builds.',
+			type: Number,
+			default: 0
+		} );
 	}
 
 	dispatch() {
 		let that = this,
-			outputDir = './build',
+			outputDir = this.options.outputDir,
 			overwrite = true,
 			preset = that.options.preset,
 			generatorBasePath = path.join( __dirname, '..', '..' ),
@@ -35,6 +53,7 @@ class BuildGenerator extends GeneratorBase {
 				targetDir: outputDir,
 				skip: !this.options.all,
 				preset: preset,
+				minify: this.options.minify,
 				presetPath: path.join( generatorBasePath, 'presets', preset + '-build-config.js' ),
 				zip: false,
 				tar: false,
@@ -106,7 +125,7 @@ class BuildGenerator extends GeneratorBase {
 		return new Promise( ( resolve, reject ) => {
 			rimraf( path.join( 'plugins', pluginName ), error => {
 				return error ? reject( error ) : resolve();
-			} )
+			} );
 		} );
 	}
 
@@ -135,7 +154,11 @@ class BuildGenerator extends GeneratorBase {
 
 			info.targetDir = tmpOutputDir;
 
-			buildProcess = spawn( 'java', info.getArguments() );
+			buildProcess = spawn( 'java', info.getArguments(), {
+				env: {
+					CKBUILDER_TIMESTAMP: this.options.timestamp !== 0 ? this.options.timestamp : undefined
+				}
+			} );
 
 			info.targetDir = outputDir;
 
