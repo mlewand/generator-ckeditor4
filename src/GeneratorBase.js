@@ -20,7 +20,7 @@ class GeneratorBase extends Generator {
 		// #7
 		this.option( 'dev', {
 			name: 'dev',
-			description: 'Whether to use editor in env CKEDITOR_DEV_PATH variable rathen than cwd',
+			description: 'Whether to use editor in env CKEDITOR_DEV_PATH variable rather than cwd',
 			default: false
 		} );
 	}
