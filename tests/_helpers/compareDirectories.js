@@ -6,10 +6,13 @@
 	 *
 	 * The important goal here is to compare text files without checking line-endings.
 	 *
+	 * @param {Object} [options]
+	 * @param {Boolean} [options.skipEol=true] Whether line endings compare should be skipped.
+	 * @param {Boolean} [options.diff=false] Whether to diff values.
 	 * @todo: it make sense to extract it into a separate module.
 	 */
 
-	function compareDirectories( expected, actual ) {
+	function compareDirectories( expected, actual, options ) {
 		let readdir = require( 'recursive-readdir' ),
 			fsp = require( 'fs-promise' ),
 			normalizePaths = ( baseDir, paths ) => paths.map( curPath => {
@@ -21,6 +24,16 @@
 
 				return ret;
 			} );
+
+		options = options || {};
+
+		if ( typeof options.skipEol === 'undefined' ) {
+			options.skipEol = true;
+		}
+
+		if ( typeof options.diff === 'undefined' ) {
+			options.diff = false;
+		}
 
 		return Promise.all( [ new Promise( ( resolve, reject ) => {
 			readdir( expected, ( err, files ) => {
@@ -43,7 +56,7 @@
 				compare = ( vals ) => {
 					let fileInfo = path.parse( vals[ 0 ].path ),
 						isText = [ '.md', '.js', '.css' ].indexOf( fileInfo.ext ) !== -1,
-						fixEol = buff => buff.toString().replace( /[\r\n]/g, '' ),
+						fixEol = options.skipEol ? buff => buff.toString().replace( /[\r\n]/g, '' ) : buff => buff.toString(),
 						expected = vals[ 0 ].content,
 						actual = vals[ 1 ].content,
 						areSame;
@@ -56,8 +69,9 @@
 						areSame = actual.equals( expected );
 					}
 
-					// expect( actual, `${vals[ 1 ].path} is different from ${vals[ 0 ].path}` ).to.be.eql( expected );
-					if ( !areSame ) {
+					if ( options.diff ) {
+						expect( actual, `${vals[ 1 ].path} is different from ${vals[ 0 ].path}` ).to.be.eql( expected );
+					} else if ( !areSame ) {
 						// It doesn't make sense to show diff, as it will get too large.
 						require( 'assert' ).ok( false, `${vals[ 1 ].path} is different from ${vals[ 0 ].path}` );
 					}
