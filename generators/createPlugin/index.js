@@ -1,4 +1,5 @@
 const Generator = require( 'yeoman-generator' ),
+	path = require( 'path' ),
 	fsp = require( 'fs-promise' );
 
 class CreatePluginGenerator extends Generator {
