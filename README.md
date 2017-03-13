@@ -40,3 +40,11 @@ Builds CKEditor project.
 `yo ckeditor4:build --preset standard`
 
 `yo ckeditor4:build --preset basic --all`
+
+## Create Plugin
+
+```bash
+yo ckeditor4:createPlugin [name]
+```
+
+Creates a new directory, with a `name` plugin boilerplate.
