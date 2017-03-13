@@ -33,7 +33,7 @@ Opens a details for the given milestone.
 
 Milestone number might be skipped, then current version of CKEditor is used.
 
-### Build
+## Build
 
 Builds CKEditor project.
 
