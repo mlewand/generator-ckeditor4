@@ -4,7 +4,7 @@ const createPlugin = require( '../../../generators/createPlugin/index' ),
 	yeomanTest = require( 'yeoman-test' ),
 	fsp = require( 'fs-promise' );
 
-describe.only( 'ckeditor4:createPlugin', () => {
+describe( 'ckeditor4:createPlugin', () => {
 	it( 'creates a basic plugin', () => {
 		return yeomanTest.run( path.join( __dirname, '../../../generators/createPlugin' ) )
 			.withArguments( 'my-plugin' )
