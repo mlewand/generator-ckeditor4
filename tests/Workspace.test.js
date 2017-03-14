@@ -4,7 +4,6 @@ let path = require( 'path' ),
 	Workspace = require( testedModulePathFromRoot );
 
 describe( 'Workspace', () => {
-
 	let mock;
 
 	beforeEach( () => {

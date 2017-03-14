@@ -37,7 +37,7 @@ describe( 'ckeditor4:createPlugin', () => {
 			} )
 			.then( tmpDir => {
 				expect( path.join( tmpDir, 'ckeditor.js' ) ).to.be.a.file();
-				expect( path.join( tmpDir, 'my-plugin' ) ).not.to.be.a.directory();
+				expect( path.join( tmpDir, 'my-plugin' ) ).to.not.be.a.path();
 				expect( path.join( tmpDir, 'plugins', 'my-plugin' ) ).to.be.a.directory();
 
 				return compareDirectoryContents( path.join( __dirname, '_fixtures', 'expectedSimplePlugin' ),
