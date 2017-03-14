@@ -1,16 +1,10 @@
-let path = require( 'path' ),
+const path = require( 'path' ),
 	yeomanTest = require( 'yeoman-test' ),
-	WorkspaceStub = sinon.stub(),
-	GeneratorBase;
-
-proxyquire( '../src/GeneratorBase', {
-	'./Workspace': WorkspaceStub
-} );
-
-GeneratorBase = require( '../src/GeneratorBase' );
+	GeneratorBase = require( '../src/GeneratorBase' );
 
 describe( 'GeneratorBase', () => {
-	let mock;
+	let createWorkspaceStub,
+		mock;
 
 	beforeEach( () => {
 		mock = {
@@ -20,10 +14,20 @@ describe( 'GeneratorBase', () => {
 				verbose: false
 			},
 			_getWorkspace: GeneratorBase.prototype._getWorkspace,
+			_createWorkspace: createWorkspaceStub,
 			destinationPath: sinon.stub().returns( '/sample/destinationPath' )
 		};
 
-		WorkspaceStub.reset();
+		createWorkspaceStub.reset();
+		createWorkspaceStub.reset();
+	} );
+
+	before( () => {
+		createWorkspaceStub = sinon.stub( GeneratorBase.prototype, '_createWorkspace' ).returns( 1 );
+	} );
+
+	after( () => {
+		createWorkspaceStub.restore();
 	} );
 
 	describe( 'logVerbose()', () => {
@@ -50,7 +54,7 @@ describe( 'GeneratorBase', () => {
 			mock._getWorkspace();
 			mock._getWorkspace();
 
-			expect( WorkspaceStub ).to.be.calledOnce;
+			expect( createWorkspaceStub ).to.be.calledOnce;
 		} );
 
 		it( 'Uses CKEDITOR_DEV_PATH env if dev option is on', () => {
@@ -65,17 +69,15 @@ describe( 'GeneratorBase', () => {
 
 			process.env.CKEDITOR_DEV_PATH = initialEnvValue;
 
-			expect( WorkspaceStub ).to.be.calledOnce;
-			expect( WorkspaceStub ).to.be.calledWithExactly( envCkePath );
+			expect( createWorkspaceStub ).to.be.calledOnce;
+			expect( createWorkspaceStub ).to.be.calledWithExactly( envCkePath );
 		} );
 
 		it( 'Uses destinationPath', () => {
 			mock._getWorkspace();
 
-			expect( WorkspaceStub ).to.be.calledOnce;
-			expect( WorkspaceStub ).to.be.calledWithExactly( '/sample/destinationPath' );
+			expect( createWorkspaceStub ).to.be.calledOnce;
+			expect( createWorkspaceStub ).to.be.calledWithExactly( '/sample/destinationPath' );
 		} );
 	} );
-
-
 } );
