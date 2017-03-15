@@ -1,8 +1,9 @@
 const Generator = require( 'yeoman-generator' ),
+	GeneratorBase = require( '../../src/GeneratorBase' )
 	path = require( 'path' ),
 	fsp = require( 'fs-promise' );
 
-class CreatePluginGenerator extends Generator {
+class CreatePluginGenerator extends GeneratorBase {
 	constructor( args, opts ) {
 		super( args, opts );
 
@@ -36,11 +37,22 @@ class CreatePluginGenerator extends Generator {
 	}
 
 	_createDirectory() {
+		let workspace = null;
+
+		try {
+			workspace = this._getWorkspace();
+		} catch ( e ) {
+			if ( !e.message.startsWith( "Sorry, can't locate CKEditor 4 in " ) ) {
+				throw e;
+			}
+		}
 
 		let dirName = this.options.name,
-			dirPath = this.destinationPath( dirName );
+			dirPath = workspace ?
+				path.join( workspace.getPluginsPath(), dirName ) :
+				this.destinationPath( dirName );
 
-		// check if dir exists;
+		// Check if dir exists:
 		return fsp.exists( dirPath )
 			.then( exists => {
 				if ( exists ) {

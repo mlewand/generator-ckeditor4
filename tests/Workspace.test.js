@@ -4,7 +4,6 @@ let path = require( 'path' ),
 	Workspace = require( testedModulePathFromRoot );
 
 describe( 'Workspace', () => {
-
 	let mock;
 
 	beforeEach( () => {
@@ -70,6 +69,25 @@ describe( 'Workspace', () => {
 					expect( plugins ).to.be.an( 'array' );
 					expect( plugins ).to.be.eql( [] );
 				} );
+		} );
+	} );
+
+	describe( 'isValidCKEditorSync()', () => {
+		it( 'works when needed', () => {
+			let dirPath  = path.join( __dirname, '_fixtures', 'Workspace', '_guessWorkspaceRoot', 'topMostCke' );
+			expect( Workspace.prototype.isValidCKEditorSync( dirPath ) ).to.be.true;
+		} );
+
+		it( 'uses _path if no argument is given', () => {
+			let mock = {
+					_path: path.join( __dirname, '_fixtures', 'Workspace', '_guessWorkspaceRoot', 'topMostCke' )
+				};
+			expect( Workspace.prototype.isValidCKEditorSync.call( mock ) ).to.be.true;
+		} );
+
+		it( 'doesnt work in subdirs', () => {
+			let dirPath  = path.join( __dirname, '_fixtures', 'Workspace', '_guessWorkspaceRoot', 'topMostCke', 'plugins' );
+			expect( Workspace.prototype.isValidCKEditorSync( dirPath ) ).to.be.false;
 		} );
 	} );
 

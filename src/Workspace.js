@@ -1,4 +1,5 @@
-let path = require( 'path' );
+const path = require( 'path' ),
+	fs = require( 'fs' );
 
 /**
  * A class describing CKEditor 4 workspace.
@@ -84,8 +85,7 @@ class Workspace {
 	 * @memberOf Workspace
 	 */
 	getPlugins() {
-		let fs = require( 'fs' ),
-			path = require( 'path' ),
+		let path = require( 'path' ),
 			pluginsDir = this.getPluginsPath();
 
 		return new Promise( ( resolve, reject ) => {
@@ -129,6 +129,18 @@ class Workspace {
 	}
 
 	/**
+	 *
+	 * @param {String} [dirPath=null] If not provided {@link #_path} is used.
+	 * @returns {Boolean} Tells whether this workspace, looks like a real CKEditor 4 installation. If `false`
+	 * it means that the generator is probably called from some random directory.
+	 */
+	isValidCKEditorSync( dirPath ) {
+		dirPath = dirPath || this._path;
+
+		return fs.existsSync( path.join( dirPath, 'ckeditor.js' ) ) && fs.existsSync( path.join( dirPath, 'plugins' ) );
+	}
+
+	/**
 	 * Returns parsed info from `package.json` as an object.
 	 *
 	 * @returns {Object}
@@ -163,9 +175,9 @@ class Workspace {
 	 * @memberOf Workspace
 	 */
 	_guessWorkspaceRoot( startPath ) {
-		let fs = require( 'fs' ),
-			parsed = path.parse( startPath ),
+		let parsed = path.parse( startPath ),
 			directories = parsed.dir.substr( parsed.root.length ).split( path.sep ),
+			// @todo: reuse isValidCKEditorSync method.
 			dirHasCKe = dirPath => fs.existsSync( path.join( dirPath, 'ckeditor.js' ) ) && fs.existsSync( path.join( dirPath, 'plugins' ) );
 
 		directories.push( parsed.name )

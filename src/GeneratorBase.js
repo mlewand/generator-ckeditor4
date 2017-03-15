@@ -20,7 +20,7 @@ class GeneratorBase extends Generator {
 		// #7
 		this.option( 'dev', {
 			name: 'dev',
-			description: 'Whether to use editor in env CKEDITOR_DEV_PATH variable rathen than cwd',
+			description: 'Whether to use editor in env CKEDITOR_DEV_PATH variable rather than cwd',
 			default: false
 		} );
 	}
@@ -31,10 +31,20 @@ class GeneratorBase extends Generator {
 	 */
 	_getWorkspace() {
 		if ( !this.workspace ) {
-			this.workspace = new Workspace( this.options.dev ? process.env.CKEDITOR_DEV_PATH : this.destinationPath() );
+			this.workspace = this._createWorkspace( this.options.dev ? process.env.CKEDITOR_DEV_PATH : this.destinationPath() );
 		}
 
 		return this.workspace;
+	}
+
+	/**
+	 * Returns a new workspace object for given Generator instance. Created for easier tests stubbing.
+	 *
+	 * @param {String} path Workspace path.
+	 * @returns {Workspace}
+	 */
+	_createWorkspace( path ) {
+		return new Workspace( path );
 	}
 
 	/**

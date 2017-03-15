@@ -55,7 +55,7 @@
 				} ),
 				compare = ( vals ) => {
 					let fileInfo = path.parse( vals[ 0 ].path ),
-						isText = [ '.md', '.js', '.css' ].indexOf( fileInfo.ext ) !== -1,
+						isText = [ '.md', '.js', '.css', '.eolpreserve' ].indexOf( fileInfo.ext ) !== -1,
 						fixEol = options.skipEol ? buff => buff.toString().replace( /[\r\n]/g, '' ) : buff => buff.toString(),
 						expected = vals[ 0 ].content,
 						actual = vals[ 1 ].content,

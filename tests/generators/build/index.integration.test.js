@@ -1,9 +1,11 @@
-let path = require( 'path' ),
+const path = require( 'path' ),
 	fs = require( 'fs' ),
 	fsp = require( 'fs-promise' ),
 	yeomanTest = require( 'yeoman-test' ),
 	rimraf = require( 'rimraf' ),
 	BuildGenerator = require( '../../../generators/build/index' ),
+	GeneratorBase = require( '../../../src/GeneratorBase' ),
+	Workspace = require( '../../../src/Workspace' ),
 	compareDirectoryContents = require( '../../_helpers/compareDirectories' );
 
 describe( 'BuildGenerator integration tests', function() {
@@ -14,7 +16,22 @@ describe( 'BuildGenerator integration tests', function() {
 		revisionStub,
 		options,
 		outputPath,
-		expectedBuildPath;
+		expectedBuildPath,
+		createWorkspaceStub;
+
+	before( () => {
+		createWorkspaceStub = sinon.stub( GeneratorBase.prototype, '_createWorkspace', path => {
+			let ret = new Workspace( ckePath );
+
+			ret.getRevision = sinon.stub().returns( revisionStub );
+
+			return ret;
+		} );
+	} );
+
+	after( () => {
+		createWorkspaceStub.restore();
+	} );
 
 	beforeEach( () => {
 		// Reset variables that might get overridden in a test case.
@@ -46,15 +63,10 @@ describe( 'BuildGenerator integration tests', function() {
 				// Then Mock yoeman instance.
 				let context = yeomanTest.run( generatorPath );
 
-				context.on( 'ready', ( generator ) => {
-					// We need to patch generator ever so slightly, so it returns desired workspace path.
-					generator._getWorkspace()._getDirectoryPath = sinon.stub().returns( ckePath );
-					generator._getWorkspace().getRevision = sinon.stub().returns( revisionStub );
-					generator._getWorkspace()._path = ckePath;
-
-					// If we want to make real logs, so we can see in the console what is going on.
-					// generator.log = console.log;
-				} );
+				// context.on( 'ready', ( generator ) => {
+				// 	// If we want to make real logs, so we can see in the console what is going on.
+				// 	generator.log = console.log;
+				// } );
 
 				context.withOptions( options );
 
