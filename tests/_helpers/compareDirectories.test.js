@@ -2,7 +2,7 @@
 const path = require( 'path' ),
 	compareDirectories = require( './compareDirectories' );
 
-describe.only( 'compareDirectories', function() {
+describe( 'compareDirectories', function() {
 	it( 'Tells the drifference in EOLs', () => {
 		let input = path.join( __dirname, '_fixtures', 'winEol' ),
 			output = path.join( __dirname, '_fixtures', 'unixEol' );
