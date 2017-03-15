@@ -1,11 +1,20 @@
 
-const createPlugin = require( '../../../generators/createPlugin/index' ),
-	compareDirectoryContents = require( '../../_helpers/compareDirectories' ),
+const compareDirectoryContents = require( '../../_helpers/compareDirectories' ),
 	yeomanTest = require( 'yeoman-test' ),
 	fsp = require( 'fs-promise' ),
-	fse = require( 'fs-extra' );
+	fse = require( 'fs-extra' ),
+	proxyquire = require( 'proxyquire' ),
+	openStub = sinon.stub();
 
 describe( 'ckeditor4:createPlugin', () => {
+	before( () => {
+		proxyquire( '../../../generators/createPlugin/index', {
+			open: openStub
+		} )
+	} );
+
+	beforeEach( () => openStub.reset() );
+
 	it( 'creates a basic plugin', () => {
 		return yeomanTest.run( path.join( __dirname, '../../../generators/createPlugin' ) )
 			.withArguments( 'my-plugin' )
@@ -30,10 +39,10 @@ describe( 'ckeditor4:createPlugin', () => {
 				let done = this.async();
 
 				return fse.copy(
-						path.join( __dirname, '..', '..', '_fixtures', 'Workspace', '_guessWorkspaceRoot', 'topMostCke' ),
-						tmpDir,
-						done
-					);
+					path.join( __dirname, '..', '..', '_fixtures', 'Workspace', '_guessWorkspaceRoot', 'topMostCke' ),
+					tmpDir,
+					done
+				);
 			} )
 			.then( tmpDir => {
 				expect( path.join( tmpDir, 'ckeditor.js' ) ).to.be.a.file();
@@ -51,10 +60,47 @@ describe( 'ckeditor4:createPlugin', () => {
 
 	it( 'doesnt override existing dir', () => {
 		return expect( yeomanTest.run( path.join( __dirname, '../../../generators/createPlugin' ) )
-				.withArguments( 'my-plugin' )
-				.inTmpDir( tmpDir => {
-					return fsp.mkdir( 'my-plugin' );
+			.withArguments( 'my-plugin' )
+			.inTmpDir( tmpDir => {
+				return fsp.mkdir( 'my-plugin' );
+			} )
+		).to.eventually.be.rejectedWith( Error, 'Directory "my-plugin" already exists.' );
+	} );
+
+	describe( 'open option', () => {
+		it( 'is not called with default logic', () => {
+			return yeomanTest.run( path.join( __dirname, '../../../generators/createPlugin' ) )
+				.withArguments( 'custom-plugin' )
+				.inTmpDir()
+				.then( ( tmpDir ) => {
+					expect( openStub ).not.to.be.called;
+				} );
+		} );
+
+		it( 'supports opening plugin.js', () => {
+			return yeomanTest.run( path.join( __dirname, '../../../generators/createPlugin' ) )
+				.withArguments( 'custom-plugin' )
+				.withOptions( {
+					'open': true
 				} )
-			).to.eventually.be.rejectedWith( Error, 'Directory "my-plugin" already exists.' );
+				.inTmpDir()
+				.then( ( tmpDir ) => {
+					expect( openStub ).to.be.calledOnce;
+					expect( openStub ).to.be.calledWithExactly( path.join( tmpDir, 'custom-plugin', 'plugin.js' ) );
+				} );
+		} );
+
+		it( 'supports opening plugin.js with shortcut option', () => {
+			return yeomanTest.run( path.join( __dirname, '../../../generators/createPlugin' ) )
+				.withArguments( 'custom-plugin' )
+				.withOptions( {
+					'o': true
+				} )
+				.inTmpDir()
+				.then( ( tmpDir ) => {
+					expect( openStub ).to.be.calledOnce;
+					expect( openStub ).to.be.calledWithExactly( path.join( tmpDir, 'custom-plugin', 'plugin.js' ) );
+				} );
+		} );
 	} );
 } );
