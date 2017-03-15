@@ -1,0 +1,17 @@
+language: node_js
+
+sudo: false
+
+node_js:
+  - "node"
+  - v7
+  - v6
+
+os:
+  - osx
+  - linux
+
+install:
+  - npm install --silent --quiet
+script:
+  - npm test
