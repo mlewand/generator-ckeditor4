@@ -43,7 +43,8 @@ class CreatePluginGenerator extends GeneratorBase {
 				this._copyTpl( this.templatePath( 'plugin.js' ), path.join( outputDirectory, 'plugin.js' ) )
 			)
 			.then( () => {
-				return new Promise( ( resolve, reject ) => {
+				return new Promise( resolve => {
+					// Files needs to be written before calling open, as otherwise file doesn't exists yet.
 					this._writeFiles( () => {
 						this._open();
 						resolve();
