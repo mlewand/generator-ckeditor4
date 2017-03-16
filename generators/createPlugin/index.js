@@ -41,10 +41,18 @@ class CreatePluginGenerator extends GeneratorBase {
 		return this._createDirectory()
 			.then( outputDirectory =>
 				this._copyTpl( this.templatePath( 'plugin.js' ), path.join( outputDirectory, 'plugin.js' ) )
-			);
+			)
+			.then( () => {
+				return new Promise( ( resolve, reject ) => {
+					this._writeFiles( () => {
+						this._open();
+						resolve();
+					} )
+				} );
+			} );
 	}
 
-	open() {
+	_open() {
 		if ( this.options.open ) {
 			open( path.join( this._getOutputDirectory(), 'plugin.js' ) );
 		}
