@@ -18,6 +18,9 @@ describe( 'ckeditor4:createPlugin', () => {
 	it( 'creates a basic plugin', () => {
 		return yeomanTest.run( path.join( __dirname, '../../../generators/createPlugin' ) )
 			.withArguments( 'my-plugin' )
+			.withOptions( {
+				'skipTests': true
+			} )
 			.inTmpDir()
 			.then( tmpDir => {
 				expect( path.join( tmpDir, 'my-plugin' ) ).to.be.a.directory();
@@ -34,6 +37,9 @@ describe( 'ckeditor4:createPlugin', () => {
 	it( 'creates a basic plugin in a workspace', () => {
 		return yeomanTest.run( path.join( __dirname, '../../../generators/createPlugin' ) )
 			.withArguments( 'my-plugin' )
+			.withOptions( {
+				'skipTests': true
+			} )
 			.inTmpDir( function( tmpDir ) {
 				// Let's recreate a dir structure reminding a valid CKE4 installation.
 				let done = this.async();
@@ -100,6 +106,36 @@ describe( 'ckeditor4:createPlugin', () => {
 				.then( ( tmpDir ) => {
 					expect( openStub ).to.be.calledOnce;
 					expect( openStub ).to.be.calledWithExactly( path.join( tmpDir, 'custom-plugin', 'plugin.js' ) );
+				} );
+		} );
+	} );
+
+	describe( 'tests', () => {
+		it( 'includes test directory', () => {
+			return yeomanTest.run( path.join( __dirname, '../../../generators/createPlugin' ) )
+				.withArguments( 'my-plugin' )
+				.inTmpDir()
+				.then( tmpDir => {
+					expect( path.join( tmpDir, 'my-plugin', 'tests' ) ).to.be.a.directory();
+
+					return compareDirectoryContents( path.join( __dirname, '_fixtures', 'expectedTests' ),
+						path.join( tmpDir, 'my-plugin', 'tests' ),
+						{
+							skipEol: false,
+							diff: true
+						} );
+				} );
+		} );
+
+		it( 'supports disabling tests directory', () => {
+			return yeomanTest.run( path.join( __dirname, '../../../generators/createPlugin' ) )
+				.withArguments( 'my-plugin' )
+				.withOptions( {
+					'skipTests': true
+				} )
+				.inTmpDir()
+				.then( tmpDir => {
+					expect( path.join( tmpDir, 'my-plugin', 'tests' ) ).not.to.be.a.path();
 				} );
 		} );
 	} );
