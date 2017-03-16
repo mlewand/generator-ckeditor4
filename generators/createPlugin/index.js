@@ -51,20 +51,8 @@ class CreatePluginGenerator extends GeneratorBase {
 	}
 
 	_createDirectory() {
-		let workspace = null;
-
-		try {
-			workspace = this._getWorkspace();
-		} catch ( e ) {
-			if ( !e.message.startsWith( "Sorry, can't locate CKEditor 4 in " ) ) {
-				throw e;
-			}
-		}
-
 		let dirName = this.options.name,
-			dirPath = workspace ?
-				path.join( workspace.getPluginsPath(), dirName ) :
-				this.destinationPath( dirName );
+			dirPath = this._getOutputDirectory();
 
 		// Check if dir exists:
 		return fsp.exists( dirPath )
