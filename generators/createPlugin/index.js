@@ -39,16 +39,9 @@ class CreatePluginGenerator extends GeneratorBase {
 
 	dispatch() {
 		return this._createDirectory()
-			.then( outputDirectory => {
-				this.fs.copyTpl(
-					this.templatePath( 'plugin.js' ),
-					path.join( outputDirectory, 'plugin.js' ),
-					{
-						name: this.options.name,
-						shortName: this.options.name
-					}
-				);
-			} );
+			.then( outputDirectory =>
+				this._copyTpl( this.templatePath( 'plugin.js' ), path.join( outputDirectory, 'plugin.js' ) )
+			);
 	}
 
 	open() {
@@ -64,14 +57,7 @@ class CreatePluginGenerator extends GeneratorBase {
 		if ( !this.options.skipTests ) {
 			let testsPaths = this.templatePath( path.join( '..', 'templatesOptional', 'tests' ) );
 
-			this.fs.copyTpl(
-				testsPaths,
-				this._getOutputDirectory(),
-				{
-					name: this.options.name,
-					shortName: this.options.name
-				}
-			);
+			this._copyTpl( testsPaths, this._getOutputDirectory() );
 		}
 	}
 
@@ -121,6 +107,20 @@ class CreatePluginGenerator extends GeneratorBase {
 
 		this._outputDirectory = dirPath;
 		return dirPath;
+	}
+
+	/**
+	 * A wrapper around `this.fs.tplCopy` call. Make sure that a common set of
+	 * ejs template variables are passed.
+	 *
+	 * @param {String} templatePath
+	 * @param {String} outputPath
+	 */
+	_copyTpl( templatePath, outputPath ) {
+		this.fs.copyTpl( templatePath, outputPath, {
+			name: this.options.name,
+			shortName: this.options.name
+		} );
 	}
 }
 
