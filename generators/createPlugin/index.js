@@ -29,6 +29,12 @@ class CreatePluginGenerator extends GeneratorBase {
 			type: Boolean,
 			default: false
 		} );
+
+		this.option( 'skipTests', {
+			description: 'If set to true no tests directory will be added.',
+			type: Boolean,
+			default: false
+		} );
 	}
 
 	dispatch() {
@@ -38,7 +44,8 @@ class CreatePluginGenerator extends GeneratorBase {
 					this.templatePath( 'plugin.js' ),
 					path.join( outputDirectory, 'plugin.js' ),
 					{
-						name: this.options.name
+						name: this.options.name,
+						shortName: this.options.name
 					}
 				);
 			} );
@@ -47,6 +54,24 @@ class CreatePluginGenerator extends GeneratorBase {
 	open() {
 		if ( this.options.open ) {
 			open( path.join( this._getOutputDirectory(), 'plugin.js' ) );
+		}
+	}
+
+	/**
+	 * Add tests directory.
+	 */
+	tests() {
+		if ( !this.options.skipTests ) {
+			let testsPaths = this.templatePath( path.join( '..', 'templatesOptional', 'tests' ) );
+
+			this.fs.copyTpl(
+				testsPaths,
+				this._getOutputDirectory(),
+				{
+					name: this.options.name,
+					shortName: this.options.name
+				}
+			);
 		}
 	}
 
