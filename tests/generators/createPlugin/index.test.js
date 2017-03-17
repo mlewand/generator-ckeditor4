@@ -8,9 +8,24 @@ const compareDirectoryContents = require( '../../_helpers/compareDirectories' ),
 
 describe( 'ckeditor4:createPlugin', () => {
 	before( () => {
-		proxyquire( '../../../generators/createPlugin/index', {
+		const CreatePluginGenerator = proxyquire( '../../../generators/createPlugin/index', {
 			open: openStub
-		} )
+		} );
+
+		var originalTplVars = CreatePluginGenerator.prototype._getTemplateVars;
+
+		// Make sure that tests wont fail as year changes.
+		CreatePluginGenerator.prototype._getTemplateVars = function() {
+			let ret = originalTplVars.call( this );
+
+			ret.year = '2017';
+
+			return ret;
+		}
+
+		after( () => {
+			CreatePluginGenerator.prototype._getTemplateVars = originalTplVars;
+		} );
 	} );
 
 	beforeEach( () => openStub.reset() );

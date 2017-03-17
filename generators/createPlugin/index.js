@@ -141,10 +141,18 @@ class CreatePluginGenerator extends GeneratorBase {
 	 * @param {String} outputPath
 	 */
 	_copyTpl( templatePath, outputPath ) {
-		this.fs.copyTpl( templatePath, outputPath, {
+		this.fs.copyTpl( templatePath, outputPath, this._getTemplateVars() );
+	}
+
+	/**
+	 * @returns {Object} Returns an variable object passed to the ejs templates.
+	 */
+	_getTemplateVars() {
+		return {
 			name: this.options.name,
-			shortName: this.options.name
-		} );
+			shortName: this.options.name,
+			year: ( new Date() ).getFullYear()
+		};
 	}
 }
 
