@@ -35,6 +35,12 @@ class CreatePluginGenerator extends GeneratorBase {
 			type: Boolean,
 			default: false
 		} );
+
+		this.option( 'skipSamples', {
+			description: 'If set to true no samples will be added.',
+			type: Boolean,
+			default: false
+		} );
 	}
 
 	dispatch() {
@@ -67,6 +73,15 @@ class CreatePluginGenerator extends GeneratorBase {
 			let testsPaths = this.templatePath( path.join( '..', 'templatesOptional', 'tests' ) );
 
 			this._copyTpl( testsPaths, this._getOutputDirectory() );
+		}
+	}
+
+	/**
+	 * Add tests directory.
+	 */
+	samples() {
+		if ( !this.options.skipSamples ) {
+			this._copyTpl( this.templatePath( path.join( '..', 'templatesOptional', 'samples' ) ), this._getOutputDirectory() );
 		}
 	}
 
