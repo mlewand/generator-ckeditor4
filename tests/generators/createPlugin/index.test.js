@@ -19,7 +19,8 @@ describe( 'ckeditor4:createPlugin', () => {
 		return yeomanTest.run( path.join( __dirname, '../../../generators/createPlugin' ) )
 			.withArguments( 'my-plugin' )
 			.withOptions( {
-				'skipTests': true
+				'skipTests': true,
+				'skipSamples': true
 			} )
 			.inTmpDir()
 			.then( tmpDir => {
@@ -38,7 +39,8 @@ describe( 'ckeditor4:createPlugin', () => {
 		return yeomanTest.run( path.join( __dirname, '../../../generators/createPlugin' ) )
 			.withArguments( 'my-plugin' )
 			.withOptions( {
-				'skipTests': true
+				'skipTests': true,
+				'skipSamples': true
 			} )
 			.inTmpDir( function( tmpDir ) {
 				// Let's recreate a dir structure reminding a valid CKE4 installation.
@@ -139,4 +141,39 @@ describe( 'ckeditor4:createPlugin', () => {
 				} );
 		} );
 	} );
+
+
+	describe( 'sample', () => {
+		it( 'supports skipping sample', () => {
+			return yeomanTest.run( path.join( __dirname, '../../../generators/createPlugin' ) )
+				.withArguments( 'my-plugin' )
+				.withOptions( {
+					'skipSamples': true
+				} )
+				.inTmpDir()
+				.then( tmpDir => {
+					expect( path.join( tmpDir, 'my-plugin', 'samples' ) ).not.to.be.a.path();
+				} );
+		} );
+
+		it( 'works', () => {
+			return yeomanTest.run( path.join( __dirname, '../../../generators/createPlugin' ) )
+				.withArguments( 'my-plugin' )
+				.withOptions( {
+					'skipSamples': false
+				} )
+				.inTmpDir()
+				.then( tmpDir => {
+					expect( path.join( tmpDir, 'my-plugin', 'samples' ) ).to.be.a.directory();
+
+					return compareDirectoryContents( path.join( __dirname, '_fixtures', 'expectedSamples' ),
+						path.join( tmpDir, 'my-plugin', 'samples' ),
+						{
+							skipEol: false,
+							diff: true
+						} );
+				} );
+		} );
+	} );
+
 } );
