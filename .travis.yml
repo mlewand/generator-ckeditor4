@@ -11,6 +11,9 @@ os:
   - osx
   - linux
 
+env:
+  - TRAVIS=1
+
 install:
   - npm install --silent --quiet
 script:

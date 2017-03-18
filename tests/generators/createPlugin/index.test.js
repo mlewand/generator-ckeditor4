@@ -108,8 +108,16 @@ describe( 'ckeditor4:createPlugin', () => {
 				} )
 				.inTmpDir()
 				.then( ( tmpDir ) => {
+					let expectedPath = path.join( tmpDir, 'custom-plugin', 'plugin.js' );
+
+					if ( process.platform === 'darwin' && process.env.TRAVIS ) {
+						// Travis will prefix the path with /private, but only for value returned by
+						// GeneratorBase.destinationPath() and not by inTmpDir, because why not? ¯\_(ツ)_/¯ (#22)
+						expectedPath = '/private' + expectedPath;
+					}
+
 					expect( openStub ).to.be.calledOnce;
-					expect( openStub ).to.be.calledWithExactly( path.join( tmpDir, 'custom-plugin', 'plugin.js' ) );
+					expect( openStub ).to.be.calledWithExactly( expectedPath );
 				} );
 		} );
 
@@ -121,8 +129,16 @@ describe( 'ckeditor4:createPlugin', () => {
 				} )
 				.inTmpDir()
 				.then( ( tmpDir ) => {
+					let expectedPath = path.join( tmpDir, 'custom-plugin', 'plugin.js' );
+
+					if ( process.platform === 'darwin' && process.env.TRAVIS ) {
+						// Travis will prefix the path with /private, but only for value returned by
+						// GeneratorBase.destinationPath() and not by inTmpDir, because why not? ¯\_(ツ)_/¯ (#22)
+						expectedPath = '/private' + expectedPath;
+					}
+
 					expect( openStub ).to.be.calledOnce;
-					expect( openStub ).to.be.calledWithExactly( path.join( tmpDir, 'custom-plugin', 'plugin.js' ) );
+					expect( openStub ).to.be.calledWithExactly( expectedPath );
 				} );
 		} );
 	} );
