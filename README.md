@@ -1,7 +1,6 @@
-
 # Yo CKEditor4
 
-[![AppVeyor](https://img.shields.io/appveyor/ci/mlewand/generator-ckeditor4.svg?svg=true&passingText=master%20%E2%9C%93)](https://ci.appveyor.com/project/mlewand/generator-ckeditor4) [![Travis CI](https://img.shields.io/travis/mlewand/generator-ckeditor4.svg)](https://travis-ci.org/mlewand/generator-ckeditor4)
+[![AppVeyor](https://ci.appveyor.com/api/projects/status/ig85qtyidxm4hkcg?svg=true&passingText=master%20%E2%9C%93)](https://ci.appveyor.com/project/mlewand/generator-ckeditor4) [![Travis CI](https://img.shields.io/travis/mlewand/generator-ckeditor4.svg)](https://travis-ci.org/mlewand/generator-ckeditor4)
 
 This generator helps with some common CKEditor 4 tasks.
 
