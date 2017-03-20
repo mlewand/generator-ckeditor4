@@ -101,8 +101,6 @@ class CreatePluginGenerator extends GeneratorBase {
 
 	_dialog() {
 		if ( this.options.dialog ) {
-			console.log( 'adding a dialog' );
-
 			let pluginContribs = this._contribs.plugin,
 				dialogName = this.options.name;
 
@@ -113,8 +111,6 @@ class CreatePluginGenerator extends GeneratorBase {
 
 			// dialog file...
 			// pluginContribs.fs.push();
-		} else {
-			console.log( 'skipping a dialog :(' );
 		}
 	}
 
