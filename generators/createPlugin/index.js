@@ -214,9 +214,11 @@ class CreatePluginGenerator extends GeneratorBase {
 				delete ret.properties.requires;
 			}
 
-			let stringified = JSON.stringify( ret.properties ).slice( 1, -1 );
-
-			ret.properties = '\n' + stringified + ',';
+			if ( ret.properties && ret.properties.length ) {
+				ret.properties = '\n' + JSON.stringify( ret.properties ).slice( 1, -1 ) + ',';
+			} else {
+				ret.properties = '';
+			}
 
 			// init:
 			if ( ret.init && ret.init.length !== 0 ) {
