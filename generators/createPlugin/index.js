@@ -41,12 +41,34 @@ class CreatePluginGenerator extends GeneratorBase {
 			type: Boolean,
 			default: false
 		} );
+
+		this.option( 'dialog', {
+			description: 'If set to true, a simple dialog will be added.',
+			type: Boolean,
+			default: false
+		} );
+
+		this._contribs = {
+			plugin: {
+				properties: {
+					requires: []
+				},
+				init: []
+			},
+
+			fs: []
+		};
 	}
 
 	dispatch() {
 		return this._createDirectory()
+			.then( outputDirectory => {
+				this._dialog();
+
+				return outputDirectory;
+			} )
 			.then( outputDirectory =>
-				this._copyTpl( this.templatePath( 'plugin.js' ), path.join( outputDirectory, 'plugin.js' ) )
+				this._copyTpl( this.templatePath( 'plugin.js' ), path.join( outputDirectory, 'plugin.js' ), 'plugin' )
 			)
 			.then( () => {
 				return new Promise( resolve => {
@@ -73,6 +95,26 @@ class CreatePluginGenerator extends GeneratorBase {
 			let testsPaths = this.templatePath( path.join( '..', 'templatesOptional', 'tests' ) );
 
 			this._copyTpl( testsPaths, this._getOutputDirectory() );
+		}
+	}
+
+
+	_dialog() {
+		if ( this.options.dialog ) {
+			console.log( 'adding a dialog' );
+
+			let pluginContribs = this._contribs.plugin,
+				dialogName = this.options.name;
+
+			pluginContribs.properties.requires.push( 'dialog' );
+
+			pluginContribs.init.push( `CKEDITOR.dialog.add( '${dialogName}', this.path + 'dialogs/${dialogName}.js' );` );
+			pluginContribs.init.push( `editor.addCommand( '${dialogName}', new CKEDITOR.dialogCommand( '${dialogName}' ) );` );
+
+			// dialog file...
+			// pluginContribs.fs.push();
+		} else {
+			console.log( 'skipping a dialog :(' );
 		}
 	}
 
@@ -140,19 +182,51 @@ class CreatePluginGenerator extends GeneratorBase {
 	 * @param {String} templatePath
 	 * @param {String} outputPath
 	 */
-	_copyTpl( templatePath, outputPath ) {
-		this.fs.copyTpl( templatePath, outputPath, this._getTemplateVars() );
+	_copyTpl( templatePath, outputPath, contributableName ) {
+		this.fs.copyTpl( templatePath, outputPath, this._getTemplateVars( contributableName ) );
 	}
 
 	/**
 	 * @returns {Object} Returns an variable object passed to the ejs templates.
 	 */
-	_getTemplateVars() {
-		return {
+	_getTemplateVars( contributableName ) {
+		let ret = {
 			name: this.options.name,
 			shortName: this.options.name,
 			year: ( new Date() ).getFullYear()
 		};
+
+		if ( this._contribs[ contributableName ] ) {
+			ret[ contributableName ] = this._processContribs( contributableName );
+		}
+
+		return ret;
+	}
+
+	_processContribs( contributableName ) {
+		let ret = this._contribs[ contributableName ];
+
+		if ( contributableName == 'plugin' ) {
+			// requires:
+			if ( ret.properties.requires && ret.properties.requires.length !== 0 ) {
+				ret.properties.requires = ret.properties.requires.join( ',' );
+			} else {
+				delete ret.properties.requires;
+			}
+
+			let stringified = JSON.stringify( ret.properties ).slice( 1, -1 );
+
+			ret.properties = '\n' + stringified + ',';
+
+			// init:
+			if ( ret.init && ret.init.length !== 0 ) {
+				ret.init = '\n' + ret.init.join( '\n' );
+			} else {
+				delete ret.init;
+			}
+		}
+
+		return ret;
 	}
 }
 
