@@ -81,12 +81,6 @@ class CreatePluginGenerator extends GeneratorBase {
 		this._open();
 	}
 
-	_open() {
-		if ( this.options.open ) {
-			open( path.join( this._getOutputDirectory(), 'plugin.js' ) );
-		}
-	}
-
 	/**
 	 * Add tests directory.
 	 */
@@ -96,6 +90,38 @@ class CreatePluginGenerator extends GeneratorBase {
 
 			this._copyTpl( testsPaths, this._getOutputDirectory() );
 		}
+	}
+
+	/**
+	 * Add tests directory.
+	 */
+	samples() {
+		if ( !this.options.skipSamples ) {
+			this._copyTpl( this.templatePath( path.join( '..', 'templatesOptional', 'samples' ) ), this._getOutputDirectory() );
+		}
+	}
+
+	/**
+	 * Adds a transformation stream handler that will remove empty comment lines,
+	 * hanging after contributions inline.
+	 *
+	 * @private
+	 */
+	_cleanupTransformStream() {
+		const through = require( 'through2' ),
+			// Remove only with tailing whitespace, that will tell the difference
+			// from regular comments, as these have tailing spaces stripped.
+			commentRegexp = /^\s*\/\/\s+\n/gm;
+
+		// @todo: Add code formatting step.
+
+		return through.obj( function( file, encoding, callback ) {
+			if ( file.extname === '.js' && file.isBuffer() ) {
+				file.contents = Buffer.from( file.contents.toString( 'utf8' ).replace( commentRegexp, '' ), 'utf8' );
+			}
+
+			callback( null, file );
+		} );
 	}
 
 
@@ -117,27 +143,10 @@ class CreatePluginGenerator extends GeneratorBase {
 		}
 	}
 
-	/**
-	 * Add tests directory.
-	 */
-	samples() {
-		if ( !this.options.skipSamples ) {
-			this._copyTpl( this.templatePath( path.join( '..', 'templatesOptional', 'samples' ) ), this._getOutputDirectory() );
+	_open() {
+		if ( this.options.open ) {
+			open( path.join( this._getOutputDirectory(), 'plugin.js' ) );
 		}
-	}
-
-	_cleanupTransformStream() {
-		const through = require( 'through2' );
-
-		// @todo: Add code formatting step.
-
-		return through.obj( function( file, encoding, callback ) {
-			if ( file.extname === '.js' && file.isBuffer() ) {
-				file.contents = Buffer.from( file.contents.toString( 'utf8' ).replace( /^\s*\/\/\s*\n/gm, '' ), 'utf8' );
-			}
-
-			callback( null, file );
-		} );
 	}
 
 	_writeFsContribs() {
