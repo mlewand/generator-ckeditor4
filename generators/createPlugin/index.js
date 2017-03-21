@@ -73,17 +73,12 @@ class CreatePluginGenerator extends GeneratorBase {
 			.then( outputDirectory =>
 				this._copyTpl( this.templatePath( 'plugin.js' ), path.join( outputDirectory, 'plugin.js' ), 'plugin' )
 			)
-			.then( () => {
-				this._writeFsContribs();
-				return new Promise( resolve => {
-					// Files needs to be written before calling open, as otherwise file doesn't exists yet.
-					// @todo mby it could be moved to the method executed after writing?
-					this._writeFiles( () => {
-						this._open();
-						resolve();
-					} )
-				} );
-			} );
+			.then( () => this._writeFsContribs );
+	}
+
+	end() {
+		// Files needs to be written before calling open, as otherwise file doesn't exists yet.
+		this._open();
 	}
 
 	_open() {
@@ -149,7 +144,6 @@ class CreatePluginGenerator extends GeneratorBase {
 		let fsContribs = this._contribs.fs;
 
 		if ( fsContribs.length ) {
-			console.log( `Writing ${fsContribs.length} fs contributions...` );
 			fsContribs.forEach( ( vals ) => {
 				this._copyTpl( vals[ 0 ], vals[ 1 ] );
 			} );
