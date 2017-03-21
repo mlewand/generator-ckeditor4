@@ -178,15 +178,18 @@ describe( 'ckeditor4:createPlugin', () => {
 			return yeomanTest.run( path.join( __dirname, '../../../generators/createPlugin' ) )
 				.withArguments( 'my-plugin' )
 				.withOptions( {
-					dialog: true
+					dialog: true,
+					skipSamples: true,
+					skipTests: true
 				} )
 				.inTmpDir()
 				.then( tmpDir => {
-					expect( path.join( tmpDir, 'my-plugin', 'dialogs' ) ).to.be.a.directory();
-					expect( path.join( tmpDir, 'my-plugin', 'dialogs', 'my-plugin.js' ) ).to.be.a.file();
+					const outputDialogsDir = path.join( tmpDir, 'my-plugin', 'dialogs' );
+					expect( outputDialogsDir ).to.be.a.directory();
+					expect( path.join( outputDialogsDir, 'my-plugin.js' ) ).to.be.a.file();
 
 					return compareDirectoryContents( path.join( __dirname, '_fixtures', 'expectedDialogs' ),
-						path.join( tmpDir, 'my-plugin', 'dialogs' ),
+						path.join( tmpDir, 'my-plugin' ),
 						{
 							skipEol: false,
 							diff: true

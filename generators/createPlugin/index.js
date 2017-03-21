@@ -246,7 +246,7 @@ class CreatePluginGenerator extends GeneratorBase {
 				delete ret.properties.requires;
 			}
 
-			if ( ret.properties && ret.properties.length ) {
+			if ( ret.properties && Object.keys( ret.properties ).length ) {
 				ret.properties = '\n' + JSON.stringify( ret.properties ).slice( 1, -1 ) + ',';
 			} else {
 				ret.properties = '';
