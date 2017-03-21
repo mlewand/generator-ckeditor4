@@ -28,6 +28,7 @@
     "lodash": "^4.17.4",
     "open": "0.0.5",
     "rimraf": "^2.5.4",
+    "through2": "^2.0.3",
     "yeoman-generator": "^1.0.1"
   },
   "devDependencies": {

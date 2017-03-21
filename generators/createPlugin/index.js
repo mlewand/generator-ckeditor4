@@ -59,6 +59,8 @@ class CreatePluginGenerator extends GeneratorBase {
 
 			fs: []
 		};
+
+		this.registerTransformStream( this._cleanupTransformStream() );
 	}
 
 	dispatch() {
@@ -127,6 +129,20 @@ class CreatePluginGenerator extends GeneratorBase {
 		if ( !this.options.skipSamples ) {
 			this._copyTpl( this.templatePath( path.join( '..', 'templatesOptional', 'samples' ) ), this._getOutputDirectory() );
 		}
+	}
+
+	_cleanupTransformStream() {
+		const through = require( 'through2' );
+
+		// @todo: Add code formatting step.
+
+		return through.obj( function( file, encoding, callback ) {
+			if ( file.extname === '.js' && file.isBuffer() ) {
+				file.contents = Buffer.from( file.contents.toString( 'utf8' ).replace( /^\s*\/\/\s*\n/gm, '' ), 'utf8' );
+			}
+
+			callback( null, file );
+		} );
 	}
 
 	_writeFsContribs() {

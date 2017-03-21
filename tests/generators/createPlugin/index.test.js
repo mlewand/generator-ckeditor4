@@ -195,7 +195,6 @@ describe( 'ckeditor4:createPlugin', () => {
 		} );
 	} );
 
-
 	describe( 'sample', () => {
 		it( 'supports skipping sample', () => {
 			return yeomanTest.run( path.join( __dirname, '../../../generators/createPlugin' ) )
