@@ -73,7 +73,7 @@ class CreatePluginGenerator extends GeneratorBase {
 			.then( outputDirectory =>
 				this._copyTpl( this.templatePath( 'plugin.js' ), path.join( outputDirectory, 'plugin.js' ), 'plugin' )
 			)
-			.then( () => this._writeFsContribs );
+			.then( this._writeFsContribs.bind( this ) );
 	}
 
 	end() {
