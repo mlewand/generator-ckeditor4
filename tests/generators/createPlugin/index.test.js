@@ -15,8 +15,8 @@ describe( 'ckeditor4:createPlugin', () => {
 		var originalTplVars = CreatePluginGenerator.prototype._getTemplateVars;
 
 		// Make sure that tests wont fail as year changes.
-		CreatePluginGenerator.prototype._getTemplateVars = function() {
-			let ret = originalTplVars.call( this );
+		CreatePluginGenerator.prototype._getTemplateVars = function( contribName ) {
+			let ret = originalTplVars.call( this, contribName );
 
 			ret.year = '2017';
 
@@ -169,6 +169,28 @@ describe( 'ckeditor4:createPlugin', () => {
 				.inTmpDir()
 				.then( tmpDir => {
 					expect( path.join( tmpDir, 'my-plugin', 'tests' ) ).not.to.be.a.path();
+				} );
+		} );
+	} );
+
+	describe( 'dialog', () => {
+		it( 'works', () => {
+			return yeomanTest.run( path.join( __dirname, '../../../generators/createPlugin' ) )
+				.withArguments( 'my-plugin' )
+				.withOptions( {
+					dialog: true
+				} )
+				.inTmpDir()
+				.then( tmpDir => {
+					expect( path.join( tmpDir, 'my-plugin', 'dialogs' ) ).to.be.a.directory();
+					expect( path.join( tmpDir, 'my-plugin', 'dialogs', 'my-plugin.js' ) ).to.be.a.file();
+
+					return compareDirectoryContents( path.join( __dirname, '_fixtures', 'expectedDialogs' ),
+						path.join( tmpDir, 'my-plugin', 'dialogs' ),
+						{
+							skipEol: false,
+							diff: true
+						} );
 				} );
 		} );
 	} );

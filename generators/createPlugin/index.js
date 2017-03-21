@@ -43,6 +43,7 @@ class CreatePluginGenerator extends GeneratorBase {
 		} );
 
 		this.option( 'dialog', {
+			alias: 'd',
 			description: 'If set to true, a simple dialog will be added.',
 			type: Boolean,
 			default: false
@@ -71,8 +72,10 @@ class CreatePluginGenerator extends GeneratorBase {
 				this._copyTpl( this.templatePath( 'plugin.js' ), path.join( outputDirectory, 'plugin.js' ), 'plugin' )
 			)
 			.then( () => {
+				this._writeFsContribs();
 				return new Promise( resolve => {
 					// Files needs to be written before calling open, as otherwise file doesn't exists yet.
+					// @todo mby it could be moved to the method executed after writing?
 					this._writeFiles( () => {
 						this._open();
 						resolve();
@@ -110,7 +113,10 @@ class CreatePluginGenerator extends GeneratorBase {
 			pluginContribs.init.push( `editor.addCommand( '${dialogName}', new CKEDITOR.dialogCommand( '${dialogName}' ) );` );
 
 			// dialog file...
-			// pluginContribs.fs.push();
+			this._contribs.fs.push( [
+				this.templatePath( path.join( '..', 'templatesOptional', 'dialog', 'dialogs', 'boilerplate.js' ) ),
+				this._getOutputDirectory() + path.sep + path.join( 'dialogs', dialogName + '.js' )
+			] );
 		}
 	}
 
@@ -120,6 +126,17 @@ class CreatePluginGenerator extends GeneratorBase {
 	samples() {
 		if ( !this.options.skipSamples ) {
 			this._copyTpl( this.templatePath( path.join( '..', 'templatesOptional', 'samples' ) ), this._getOutputDirectory() );
+		}
+	}
+
+	_writeFsContribs() {
+		let fsContribs = this._contribs.fs;
+
+		if ( fsContribs.length ) {
+			console.log( `Writing ${fsContribs.length} fs contributions...` );
+			fsContribs.forEach( ( vals ) => {
+				this._copyTpl( vals[ 0 ], vals[ 1 ] );
+			} );
 		}
 	}
 
