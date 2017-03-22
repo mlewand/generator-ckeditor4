@@ -41,28 +41,57 @@ class CreatePluginGenerator extends GeneratorBase {
 			type: Boolean,
 			default: false
 		} );
+
+		this.option( 'dialog', {
+			alias: 'd',
+			description: 'If set to true, a simple dialog will be added.',
+			type: Boolean,
+			default: false
+		} );
+
+		this._contribs = {
+			plugin: {
+				properties: {
+					requires: []
+				},
+				init: []
+			},
+
+			fs: []
+		};
+
+		const beautify = require('gulp-beautify'),
+			gulpIf = require( 'gulp-if' );
+
+		this.registerTransformStream( [
+			this._cleanupTransformStream(),
+			gulpIf( function( file ) {
+				return file.extname.toLowerCase() === '.js';
+			}, beautify( {
+				indent_with_tabs: true,
+				space_in_paren: true,
+				space_in_empty_paren: false,
+				space_after_anon_function: false
+			} ) )
+		] );
 	}
 
 	dispatch() {
 		return this._createDirectory()
+			.then( outputDirectory => {
+				this._dialog();
+
+				return outputDirectory;
+			} )
 			.then( outputDirectory =>
-				this._copyTpl( this.templatePath( 'plugin.js' ), path.join( outputDirectory, 'plugin.js' ) )
+				this._copyTpl( this.templatePath( 'plugin.js' ), path.join( outputDirectory, 'plugin.js' ), 'plugin' )
 			)
-			.then( () => {
-				return new Promise( resolve => {
-					// Files needs to be written before calling open, as otherwise file doesn't exists yet.
-					this._writeFiles( () => {
-						this._open();
-						resolve();
-					} )
-				} );
-			} );
+			.then( this._writeFsContribs.bind( this ) );
 	}
 
-	_open() {
-		if ( this.options.open ) {
-			open( path.join( this._getOutputDirectory(), 'plugin.js' ) );
-		}
+	end() {
+		// Files needs to be written before calling open, as otherwise file doesn't exists yet.
+		this._open();
 	}
 
 	/**
@@ -82,6 +111,64 @@ class CreatePluginGenerator extends GeneratorBase {
 	samples() {
 		if ( !this.options.skipSamples ) {
 			this._copyTpl( this.templatePath( path.join( '..', 'templatesOptional', 'samples' ) ), this._getOutputDirectory() );
+		}
+	}
+
+	/**
+	 * Adds a transformation stream handler that will remove empty comment lines,
+	 * hanging after contributions inline.
+	 *
+	 * @private
+	 */
+	_cleanupTransformStream() {
+		const through = require( 'through2' ),
+			// Remove only with tailing whitespace, that will tell the difference
+			// from regular comments, as these have tailing spaces stripped.
+			commentRegexp = /^\s*\/\/\s+\n/gm;
+
+		// @todo: Add code formatting step.
+
+		return through.obj( function( file, encoding, callback ) {
+			if ( file.extname === '.js' && file.isBuffer() ) {
+				file.contents = Buffer.from( file.contents.toString( 'utf8' ).replace( commentRegexp, '' ), 'utf8' );
+			}
+
+			callback( null, file );
+		} );
+	}
+
+
+	_dialog() {
+		if ( this.options.dialog ) {
+			let pluginContribs = this._contribs.plugin,
+				dialogName = this.options.name;
+
+			pluginContribs.properties.requires.push( 'dialog' );
+
+			pluginContribs.init.push( `CKEDITOR.dialog.add( '${dialogName}', this.path + 'dialogs/${dialogName}.js' );` );
+			pluginContribs.init.push( `editor.addCommand( '${dialogName}', new CKEDITOR.dialogCommand( '${dialogName}' ) );` );
+
+			// dialog file...
+			this._contribs.fs.push( [
+				this.templatePath( path.join( '..', 'templatesOptional', 'dialog', 'dialogs', 'boilerplate.js' ) ),
+				this._getOutputDirectory() + path.sep + path.join( 'dialogs', dialogName + '.js' )
+			] );
+		}
+	}
+
+	_open() {
+		if ( this.options.open ) {
+			open( path.join( this._getOutputDirectory(), 'plugin.js' ) );
+		}
+	}
+
+	_writeFsContribs() {
+		let fsContribs = this._contribs.fs;
+
+		if ( fsContribs.length ) {
+			fsContribs.forEach( ( vals ) => {
+				this._copyTpl( vals[ 0 ], vals[ 1 ] );
+			} );
 		}
 	}
 
@@ -140,19 +227,55 @@ class CreatePluginGenerator extends GeneratorBase {
 	 * @param {String} templatePath
 	 * @param {String} outputPath
 	 */
-	_copyTpl( templatePath, outputPath ) {
-		this.fs.copyTpl( templatePath, outputPath, this._getTemplateVars() );
+	_copyTpl( templatePath, outputPath, contributableName ) {
+		this.fs.copyTpl( templatePath, outputPath, this._getTemplateVars( contributableName ) );
 	}
 
 	/**
 	 * @returns {Object} Returns an variable object passed to the ejs templates.
 	 */
-	_getTemplateVars() {
-		return {
+	_getTemplateVars( contributableName ) {
+		let ret = {
 			name: this.options.name,
 			shortName: this.options.name,
 			year: ( new Date() ).getFullYear()
 		};
+
+		if ( this._contribs[ contributableName ] ) {
+			ret[ contributableName ] = this._processContribs( contributableName );
+		}
+
+		return ret;
+	}
+
+	_processContribs( contributableName ) {
+		// The whole contribution model was experimentally introduced in #19. More commments on this
+		// in the ticket.
+		let ret = this._contribs[ contributableName ];
+
+		if ( contributableName == 'plugin' ) {
+			// requires:
+			if ( ret.properties.requires && ret.properties.requires.length !== 0 ) {
+				ret.properties.requires = ret.properties.requires.join( ',' );
+			} else {
+				delete ret.properties.requires;
+			}
+
+			if ( ret.properties && Object.keys( ret.properties ).length ) {
+				ret.properties = '\n' + JSON.stringify( ret.properties ).slice( 1, -1 ) + ',';
+			} else {
+				ret.properties = '';
+			}
+
+			// init:
+			if ( ret.init && ret.init.length !== 0 ) {
+				ret.init = '\n' + ret.init.join( '\n' );
+			} else {
+				delete ret.init;
+			}
+		}
+
+		return ret;
 	}
 }
 

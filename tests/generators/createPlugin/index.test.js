@@ -15,8 +15,8 @@ describe( 'ckeditor4:createPlugin', () => {
 		var originalTplVars = CreatePluginGenerator.prototype._getTemplateVars;
 
 		// Make sure that tests wont fail as year changes.
-		CreatePluginGenerator.prototype._getTemplateVars = function() {
-			let ret = originalTplVars.call( this );
+		CreatePluginGenerator.prototype._getTemplateVars = function( contribName ) {
+			let ret = originalTplVars.call( this, contribName );
 
 			ret.year = '2017';
 
@@ -173,6 +173,30 @@ describe( 'ckeditor4:createPlugin', () => {
 		} );
 	} );
 
+	describe( 'dialog', () => {
+		it( 'works', () => {
+			return yeomanTest.run( path.join( __dirname, '../../../generators/createPlugin' ) )
+				.withArguments( 'my-plugin' )
+				.withOptions( {
+					dialog: true,
+					skipSamples: true,
+					skipTests: true
+				} )
+				.inTmpDir()
+				.then( tmpDir => {
+					const outputDialogsDir = path.join( tmpDir, 'my-plugin', 'dialogs' );
+					expect( outputDialogsDir ).to.be.a.directory();
+					expect( path.join( outputDialogsDir, 'my-plugin.js' ) ).to.be.a.file();
+
+					return compareDirectoryContents( path.join( __dirname, '_fixtures', 'expectedDialogs' ),
+						path.join( tmpDir, 'my-plugin' ),
+						{
+							skipEol: false,
+							diff: true
+						} );
+				} );
+		} );
+	} );
 
 	describe( 'sample', () => {
 		it( 'supports skipping sample', () => {
