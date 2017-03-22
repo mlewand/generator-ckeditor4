@@ -175,6 +175,45 @@ describe( 'ckeditor4:createPlugin', () => {
 		} );
 	} );
 
+
+	describe( 'lang', () => {
+		it( 'works', () => {
+			return yeomanTest.run( path.join( __dirname, '../../../generators/createPlugin' ) )
+				.withArguments( 'foobar' )
+				.withOptions( {
+					skipSamples: true,
+					skipTests: true,
+					skipVscode: true
+				} )
+				.inTmpDir()
+				.then( tmpDir => {
+					expect( path.join( tmpDir, 'foobar', 'lang' ) ).to.be.a.directory();
+
+					return compareDirectoryContents( path.join( __dirname, '_fixtures', 'expectedLangs' ),
+						path.join( tmpDir, 'foobar' ),
+						{
+							skipEol: false,
+							diff: true
+						} );
+				} );
+		} );
+
+		it( 'can be disabled', () => {
+			return yeomanTest.run( path.join( __dirname, '../../../generators/createPlugin' ) )
+				.withArguments( 'foobar' )
+				.withOptions( {
+					skipSamples: true,
+					skipTests: true,
+					skipVscode: true,
+					skipLang: true
+				} )
+				.inTmpDir()
+				.then( tmpDir => {
+					expect( path.join( tmpDir, 'foobar', 'lang' ) ).not.to.be.a.path();
+				} );
+		} );
+	} );
+
 	describe( 'dialog', () => {
 		it( 'works', () => {
 			return yeomanTest.run( path.join( __dirname, '../../../generators/createPlugin' ) )
@@ -183,7 +222,8 @@ describe( 'ckeditor4:createPlugin', () => {
 					dialog: true,
 					skipSamples: true,
 					skipTests: true,
-					skipVscode: true
+					skipVscode: true,
+					skipLang: true
 				} )
 				.inTmpDir()
 				.then( tmpDir => {
