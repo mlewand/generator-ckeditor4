@@ -74,6 +74,8 @@ class CreatePluginGenerator extends GeneratorBase {
 				space_after_anon_function: false
 			} ) )
 		] );
+
+		this.composeWith( require.resolve( './../createPluginVscode' ) );
 	}
 
 	dispatch() {
