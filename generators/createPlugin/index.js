@@ -249,6 +249,8 @@ class CreatePluginGenerator extends GeneratorBase {
 	}
 
 	_processContribs( contributableName ) {
+		// The whole contribution model was experimentally introduced in #19. More commments on this
+		// in the ticket.
 		let ret = this._contribs[ contributableName ];
 
 		if ( contributableName == 'plugin' ) {
