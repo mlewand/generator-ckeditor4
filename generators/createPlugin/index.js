@@ -31,20 +31,26 @@ class CreatePluginGenerator extends GeneratorBase {
 		} );
 
 		this.option( 'skipTests', {
-			description: 'If set to true no tests directory will be added.',
+			description: 'If set, no tests directory will be added.',
 			type: Boolean,
 			default: false
 		} );
 
 		this.option( 'skipSamples', {
-			description: 'If set to true no samples will be added.',
+			description: 'If set, no samples will be added.',
+			type: Boolean,
+			default: false
+		} );
+
+		this.option( 'skipLang', {
+			description: 'If set, no language file will be created.',
 			type: Boolean,
 			default: false
 		} );
 
 		this.option( 'dialog', {
 			alias: 'd',
-			description: 'If set to true, a simple dialog will be added.',
+			description: 'If set, a simple dialog will be added.',
 			type: Boolean,
 			default: false
 		} );
@@ -87,6 +93,7 @@ class CreatePluginGenerator extends GeneratorBase {
 
 	dispatch() {
 		this._dialog();
+		this._lang();
 		this._copyTpl( this.templatePath( 'plugin.js' ), this.destinationPath( 'plugin.js' ), 'plugin' )
 		this._writeFsContribs();
 	}
@@ -154,6 +161,17 @@ class CreatePluginGenerator extends GeneratorBase {
 			this._contribs.fs.push( [
 				this.templatePath( path.join( '..', 'templatesOptional', 'dialog', 'dialogs', 'boilerplate.js' ) ),
 				this.destinationPath() + path.sep + path.join( 'dialogs', dialogName + '.js' )
+			] );
+		}
+	}
+
+	_lang() {
+		if ( !this.options.skipLang ) {
+			this._contribs.plugin.properties.lang = 'en';
+
+			this._contribs.fs.push( [
+				this.templatePath( path.join( '..', 'templatesOptional', 'lang', 'lang', 'en.js' ) ),
+				this.destinationPath() + path.sep + path.join( 'lang', 'en.js' )
 			] );
 		}
 	}
