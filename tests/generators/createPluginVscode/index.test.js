@@ -1,10 +1,9 @@
 
-let path = require( 'path' ),
+const path = require( 'path' ),
 	yeomanTest = require( 'yeoman-test' ),
 	yoAssert = require( 'yeoman-assert' ),
-	testedModulePath = '../../../generators/createPluginVscode/index';
-
-let IssueGenerator = require( testedModulePath );
+	testedModulePath = '../../../generators/createPluginVscode/index',
+	IssueGenerator = require( testedModulePath );
 
 describe( 'VSCode additions', () => {
 	it( 'adds entry to package.json', () => {
