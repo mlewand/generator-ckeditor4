@@ -1,4 +1,4 @@
-const GeneratorBase = require( '../../src/GeneratorBase' )
+const GeneratorBase = require( '../../src/GeneratorBase' ),
 	_ = require( 'lodash' );
 
 class CreatePluginGenerator extends GeneratorBase {
@@ -14,19 +14,14 @@ class CreatePluginGenerator extends GeneratorBase {
 	}
 
 	writing() {
-		if ( this.options.skipVscode ) {
-			return;
-		}
-
-		let pkg = this.fs.readJSON( this.destinationPath( 'package.json' ), {} );
-
-		_.extend( pkg, {
-			devDependencies: {
-				'@types/ckeditor': '^0.0.37'
+		if ( !this.options.skipVscode ) {
+			if ( !this.fs.exists( 'package.json' ) ) {
+				// Make sure that package.json exists, so that devDeps are saved.
+				this.fs.writeJSON( this.destinationPath( 'package.json' ), {} );
 			}
-		} );
 
-		this.fs.writeJSON( this.destinationPath( 'package.json' ), pkg );
+			this.npmInstall( [ '@types/ckeditor' ], { 'save-dev': true } );
+		}
 	}
 }
 

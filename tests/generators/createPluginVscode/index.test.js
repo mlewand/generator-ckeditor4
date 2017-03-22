@@ -6,16 +6,18 @@ const path = require( 'path' ),
 	IssueGenerator = require( testedModulePath );
 
 describe( 'VSCode additions', () => {
+	const npmInstallStub = sinon.stub( IssueGenerator.prototype, 'npmInstall' );
+
+	beforeEach( () => npmInstallStub.reset() );
+
+	after( () => npmInstallStub.restore() );
+
 	it( 'adds entry to package.json', () => {
 		return yeomanTest.run( path.join( path.resolve( __dirname ), testedModulePath, '..' ) )
 			.then( function( dir ) {
 				expect( path.join( dir, 'package.json' ) ).to.be.a.file();
 
-				yoAssert.jsonFileContent( path.join( dir, 'package.json' ), {
-					devDependencies: {
-						'@types/ckeditor': '^0.0.37'
-					}
-				} );
+				expect( npmInstallStub ).to.be.calledWithExactly( [ '@types/ckeditor' ], { 'save-dev': true } );
 			} );
 	} );
 
@@ -26,6 +28,8 @@ describe( 'VSCode additions', () => {
 			} )
 			.then( function( dir ) {
 				expect( path.join( dir, 'package.json' ) ).not.to.be.a.path();
+
+				expect( npmInstallStub ).not.to.be.calledWithExactly( [ '@types/ckeditor' ], { 'save-dev': true } );
 			} );
 	} );
 } );

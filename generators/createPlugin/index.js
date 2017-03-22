@@ -94,10 +94,6 @@ class CreatePluginGenerator extends GeneratorBase {
 	end() {
 		// Files needs to be written before calling open, as otherwise file doesn't exists yet.
 		this._open();
-
-		if ( this.fs.exists( 'package.json' ) ) {
-			this.npmInstall();
-		}
 	}
 
 	/**
