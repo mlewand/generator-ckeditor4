@@ -60,7 +60,20 @@ class CreatePluginGenerator extends GeneratorBase {
 			fs: []
 		};
 
-		this.registerTransformStream( this._cleanupTransformStream() );
+		const beautify = require('gulp-beautify'),
+			gulpIf = require( 'gulp-if' );
+
+		this.registerTransformStream( [
+			this._cleanupTransformStream(),
+			gulpIf( function( file ) {
+				return file.extname.toLowerCase() === '.js';
+			}, beautify( {
+				indent_with_tabs: true,
+				space_in_paren: true,
+				space_in_empty_paren: false,
+				space_after_anon_function: false
+			} ) )
+		] );
 	}
 
 	dispatch() {
