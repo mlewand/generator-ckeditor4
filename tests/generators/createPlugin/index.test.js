@@ -34,9 +34,10 @@ describe( 'ckeditor4:createPlugin', () => {
 		return yeomanTest.run( path.join( __dirname, '../../../generators/createPlugin' ) )
 			.withArguments( 'my-plugin' )
 			.withOptions( {
-				'skipTests': true,
-				'skipSamples': true,
-				'skipVscode': true
+				skipTests: true,
+				skipSamples: true,
+				skipVscode: true,
+				skipLang: true
 			} )
 			.inTmpDir()
 			.then( tmpDir => {
@@ -55,9 +56,10 @@ describe( 'ckeditor4:createPlugin', () => {
 		return yeomanTest.run( path.join( __dirname, '../../../generators/createPlugin' ) )
 			.withArguments( 'my-plugin' )
 			.withOptions( {
-				'skipTests': true,
-				'skipSamples': true,
-				'skipVscode': true
+				skipTests: true,
+				skipSamples: true,
+				skipVscode: true,
+				skipLang: true
 			} )
 			.inTmpDir( function( tmpDir ) {
 				// Let's recreate a dir structure reminding a valid CKE4 installation.
