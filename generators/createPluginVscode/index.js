@@ -5,15 +5,19 @@ class CreatePluginGenerator extends GeneratorBase {
 	constructor( args, opts ) {
 		super( args, opts );
 
-		this.option( 'vscode', {
-			alias: 'vs',
+		this.option( 'skipVscode', {
+			alias: 'no-vs',
 			description: 'If set will include Visual Studio Code goodies, such as improved type hinting.',
 			type: Boolean,
-			default: true
+			default: false
 		} );
 	}
 
 	writing() {
+		if ( this.options.skipVscode ) {
+			return;
+		}
+
 		let pkg = this.fs.readJSON( this.destinationPath( 'package.json' ), {} );
 
 		_.extend( pkg, {
