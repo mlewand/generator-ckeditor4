@@ -35,7 +35,8 @@ describe( 'ckeditor4:createPlugin', () => {
 			.withArguments( 'my-plugin' )
 			.withOptions( {
 				'skipTests': true,
-				'skipSamples': true
+				'skipSamples': true,
+				'skipVscode': true
 			} )
 			.inTmpDir()
 			.then( tmpDir => {
@@ -55,7 +56,8 @@ describe( 'ckeditor4:createPlugin', () => {
 			.withArguments( 'my-plugin' )
 			.withOptions( {
 				'skipTests': true,
-				'skipSamples': true
+				'skipSamples': true,
+				'skipVscode': true
 			} )
 			.inTmpDir( function( tmpDir ) {
 				// Let's recreate a dir structure reminding a valid CKE4 installation.
@@ -180,7 +182,8 @@ describe( 'ckeditor4:createPlugin', () => {
 				.withOptions( {
 					dialog: true,
 					skipSamples: true,
-					skipTests: true
+					skipTests: true,
+					skipVscode: true
 				} )
 				.inTmpDir()
 				.then( tmpDir => {

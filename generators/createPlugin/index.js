@@ -74,19 +74,21 @@ class CreatePluginGenerator extends GeneratorBase {
 				space_after_anon_function: false
 			} ) )
 		] );
+
+		this.composeWith( require.resolve( './../createPluginVscode' ), this.options );
+	}
+
+	initializing() {
+		const desiredDirectory = this._getOutputDirectory();
+
+		return this._createDirectory( this.options.name, desiredDirectory )
+			.then( () => this.destinationRoot( desiredDirectory ) );
 	}
 
 	dispatch() {
-		return this._createDirectory()
-			.then( outputDirectory => {
-				this._dialog();
-
-				return outputDirectory;
-			} )
-			.then( outputDirectory =>
-				this._copyTpl( this.templatePath( 'plugin.js' ), path.join( outputDirectory, 'plugin.js' ), 'plugin' )
-			)
-			.then( this._writeFsContribs.bind( this ) );
+		this._dialog();
+		this._copyTpl( this.templatePath( 'plugin.js' ), this.destinationPath( 'plugin.js' ), 'plugin' )
+		this._writeFsContribs();
 	}
 
 	end() {
@@ -101,7 +103,7 @@ class CreatePluginGenerator extends GeneratorBase {
 		if ( !this.options.skipTests ) {
 			let testsPaths = this.templatePath( path.join( '..', 'templatesOptional', 'tests' ) );
 
-			this._copyTpl( testsPaths, this._getOutputDirectory() );
+			this._copyTpl( testsPaths, this.destinationPath() );
 		}
 	}
 
@@ -110,7 +112,7 @@ class CreatePluginGenerator extends GeneratorBase {
 	 */
 	samples() {
 		if ( !this.options.skipSamples ) {
-			this._copyTpl( this.templatePath( path.join( '..', 'templatesOptional', 'samples' ) ), this._getOutputDirectory() );
+			this._copyTpl( this.templatePath( path.join( '..', 'templatesOptional', 'samples' ) ), this.destinationPath() );
 		}
 	}
 
@@ -151,14 +153,14 @@ class CreatePluginGenerator extends GeneratorBase {
 			// dialog file...
 			this._contribs.fs.push( [
 				this.templatePath( path.join( '..', 'templatesOptional', 'dialog', 'dialogs', 'boilerplate.js' ) ),
-				this._getOutputDirectory() + path.sep + path.join( 'dialogs', dialogName + '.js' )
+				this.destinationPath() + path.sep + path.join( 'dialogs', dialogName + '.js' )
 			] );
 		}
 	}
 
 	_open() {
 		if ( this.options.open ) {
-			open( path.join( this._getOutputDirectory(), 'plugin.js' ) );
+			open( path.join( this.destinationPath(), 'plugin.js' ) );
 		}
 	}
 
@@ -172,9 +174,8 @@ class CreatePluginGenerator extends GeneratorBase {
 		}
 	}
 
-	_createDirectory() {
-		let dirName = this.options.name,
-			dirPath = this._getOutputDirectory();
+	_createDirectory( dirName, dirPath ) {
+		// let dirPath = this.destinationPath( dirName );
 
 		// Check if dir exists:
 		return fsp.exists( dirPath )
@@ -183,9 +184,9 @@ class CreatePluginGenerator extends GeneratorBase {
 					throw new Error( `Directory "${dirName}" already exists.` );
 				}
 
-				return fsp.mkdir( dirPath );
-			} )
-			.then( () => dirPath );
+				return fsp.mkdir( dirPath )
+					.then( () => dirPath );
+			} );
 	}
 
 	/**
@@ -197,11 +198,8 @@ class CreatePluginGenerator extends GeneratorBase {
 	 * @returns {String}
 	 */
 	_getOutputDirectory() {
-		if ( this._outputDirectory ) {
-			return this._outputDirectory;
-		}
-
-		let workspace = null;
+		let workspace = null,
+			dirName = this.options.name;
 
 		try {
 			workspace = this._getWorkspace();
@@ -211,13 +209,9 @@ class CreatePluginGenerator extends GeneratorBase {
 			}
 		}
 
-		let dirName = this.options.name,
-			dirPath = workspace ?
+		return workspace ?
 				path.join( workspace.getPluginsPath(), dirName ) :
 				this.destinationPath( dirName );
-
-		this._outputDirectory = dirPath;
-		return dirPath;
 	}
 
 	/**
