@@ -29,7 +29,8 @@ class CreatePluginGenerator extends GeneratorBase {
 		}, {
 			name: 'author',
 			message: 'Author',
-			when: !this.options.author
+			when: !this.options.author,
+			store: true
 		}];
 
 		return this.prompt( prompts )
