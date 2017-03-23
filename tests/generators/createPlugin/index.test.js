@@ -222,8 +222,7 @@ describe( 'ckeditor4:createPlugin', () => {
 					skipSamples: true,
 					skipTests: true,
 					skipVscode: true,
-					skipLang: true,
-					skipIcon: true
+					skipLang: true
 				} )
 				.inTmpDir()
 				.then( tmpDir => {
@@ -259,7 +258,8 @@ describe( 'ckeditor4:createPlugin', () => {
 					skipSamples: true,
 					skipTests: true,
 					skipVscode: true,
-					skipLang: true
+					skipLang: true,
+					skipIcon: true
 				} )
 				.inTmpDir()
 				.then( tmpDir => {
