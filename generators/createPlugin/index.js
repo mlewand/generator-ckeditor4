@@ -142,8 +142,6 @@ class CreatePluginGenerator extends GeneratorBase {
 			// from regular comments, as these have tailing spaces stripped.
 			commentRegexp = /^\s*\/\/\s+\n/gm;
 
-		// @todo: Add code formatting step.
-
 		return through.obj( function( file, encoding, callback ) {
 			if ( file.extname === '.js' && file.isBuffer() ) {
 				file.contents = Buffer.from( file.contents.toString( 'utf8' ).replace( commentRegexp, '' ), 'utf8' );
