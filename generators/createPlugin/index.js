@@ -2,26 +2,14 @@ const Generator = require( 'yeoman-generator' ),
 	GeneratorBase = require( '../../src/GeneratorBase' )
 	path = require( 'path' ),
 	fsp = require( 'fs-promise' ),
-	open = require( 'open' );
+	open = require( 'open' ),
+	_ = require( 'lodash' );
 
 class CreatePluginGenerator extends GeneratorBase {
 	constructor( args, opts ) {
 		super( args, opts );
 
-		this.argument( 'name', {
-			required: true,
-			description: 'Name of the plugin.',
-			type: function( val ) {
-				val = String( val );
-				let allowedRegexp = /^[a-z0-9\-_]+$/i;
-
-				if ( !val.match( allowedRegexp ) ) {
-					throw new Error( `Plugin name, "${val}" doesn't match allowed name regexp: ${allowedRegexp}.` );
-				}
-
-				return val;
-			}
-		} );
+		this.argument( 'name', require( './pluginNameArgument' ) );
 
 		this.option( 'open', {
 			alias: 'o',
@@ -50,6 +38,12 @@ class CreatePluginGenerator extends GeneratorBase {
 
 		this.option( 'skipIcon', {
 			description: 'If set, no icon will be created.',
+			type: Boolean,
+			default: false
+		} );
+
+		this.option( 'skipPackage', {
+			description: 'If set, no package.json will be generated.',
 			type: Boolean,
 			default: false
 		} );
@@ -88,6 +82,12 @@ class CreatePluginGenerator extends GeneratorBase {
 		] );
 
 		this.composeWith( require.resolve( './../createPluginVscode' ), this.options );
+
+		if ( !this.options.skipPackage ) {
+			this.composeWith( require.resolve( './../package' ), _.extend( {}, this.options, {
+				arguments: [ this.options.name ]
+			} ) );
+		}
 	}
 
 	initializing() {
