@@ -4,7 +4,8 @@ const compareDirectoryContents = require( '../../_helpers/compareDirectories' ),
 	fsp = require( 'fs-promise' ),
 	fse = require( 'fs-extra' ),
 	proxyquire = require( 'proxyquire' ),
-	openStub = sinon.stub();
+	openStub = sinon.stub(),
+	_ = require( 'lodash' );
 
 describe( 'ckeditor4:createPlugin', () => {
 	before( () => {
@@ -36,7 +37,8 @@ describe( 'ckeditor4:createPlugin', () => {
 		skipSamples: true,
 		skipVscode: true,
 		skipLang: true,
-		skipIcon: true
+		skipIcon: true,
+		skipPackage: true
 	};
 
 	it( 'creates a basic plugin', () => {
@@ -181,12 +183,7 @@ describe( 'ckeditor4:createPlugin', () => {
 		it( 'works', () => {
 			return yeomanTest.run( path.join( __dirname, '../../../generators/createPlugin' ) )
 				.withArguments( 'foobar' )
-				.withOptions( {
-					skipSamples: true,
-					skipTests: true,
-					skipVscode: true,
-					skipIcon: true
-				} )
+				.withOptions( _.extend( {}, skipOptionalStuff, { skipLang: false } ) )
 				.inTmpDir()
 				.then( tmpDir => {
 					expect( path.join( tmpDir, 'foobar', 'lang' ) ).to.be.a.directory();
@@ -203,10 +200,7 @@ describe( 'ckeditor4:createPlugin', () => {
 		it( 'can be disabled', () => {
 			return yeomanTest.run( path.join( __dirname, '../../../generators/createPlugin' ) )
 				.withArguments( 'foobar' )
-				.withOptions( {
-					skipLang: true,
-					skipIcon: true
-				} )
+				.withOptions( skipOptionalStuff )
 				.inTmpDir()
 				.then( tmpDir => {
 					expect( path.join( tmpDir, 'foobar', 'lang' ) ).not.to.be.a.path();
@@ -218,12 +212,7 @@ describe( 'ckeditor4:createPlugin', () => {
 		it( 'works', () => {
 			return yeomanTest.run( path.join( __dirname, '../../../generators/createPlugin' ) )
 				.withArguments( 'foobar' )
-				.withOptions( {
-					skipSamples: true,
-					skipTests: true,
-					skipVscode: true,
-					skipLang: true
-				} )
+				.withOptions( _.extend( {}, skipOptionalStuff, { skipIcon: false } ) )
 				.inTmpDir()
 				.then( tmpDir => {
 					expect( path.join( tmpDir, 'foobar', 'icons' ) ).to.be.a.directory();
@@ -253,14 +242,7 @@ describe( 'ckeditor4:createPlugin', () => {
 		it( 'works', () => {
 			return yeomanTest.run( path.join( __dirname, '../../../generators/createPlugin' ) )
 				.withArguments( 'my-plugin' )
-				.withOptions( {
-					dialog: true,
-					skipSamples: true,
-					skipTests: true,
-					skipVscode: true,
-					skipLang: true,
-					skipIcon: true
-				} )
+				.withOptions( _.extend( skipOptionalStuff, { dialog: true } ) )
 				.inTmpDir()
 				.then( tmpDir => {
 					const outputDialogsDir = path.join( tmpDir, 'my-plugin', 'dialogs' );
