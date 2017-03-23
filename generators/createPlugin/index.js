@@ -48,6 +48,12 @@ class CreatePluginGenerator extends GeneratorBase {
 			default: false
 		} );
 
+		this.option( 'skipIcon', {
+			description: 'If set, no icon will be created.',
+			type: Boolean,
+			default: false
+		} );
+
 		this.option( 'dialog', {
 			alias: 'd',
 			description: 'If set, a simple dialog will be added.',
@@ -94,6 +100,7 @@ class CreatePluginGenerator extends GeneratorBase {
 	dispatch() {
 		this._dialog();
 		this._lang();
+		this._icon();
 		this._copyTpl( this.templatePath( 'plugin.js' ), this.destinationPath( 'plugin.js' ), 'plugin' )
 		this._writeFsContribs();
 	}
@@ -172,6 +179,23 @@ class CreatePluginGenerator extends GeneratorBase {
 			this._contribs.fs.push( [
 				this.templatePath( path.join( '..', 'templatesOptional', 'lang', 'lang', 'en.js' ) ),
 				this.destinationPath() + path.sep + path.join( 'lang', 'en.js' )
+			] );
+		}
+	}
+
+	_icon() {
+		if ( !this.options.skipIcon ) {
+			const name = this.options.name;
+
+			this._contribs.plugin.properties.icons = name;
+			this._contribs.plugin.properties.hidpi = true;
+
+			this._contribs.fs.push( [
+				this.templatePath( path.join( '..', 'templatesOptional', 'icon', 'icons', `boilerplate.png` ) ),
+				this.destinationPath() + path.sep + path.join( 'icons', `${name}.png` )
+			], [
+				this.templatePath( path.join( '..', 'templatesOptional', 'icon', 'icons', 'hidpi', `boilerplate.png` ) ),
+				this.destinationPath() + path.sep + path.join( 'icons', 'hidpi', `${name}.png` )
 			] );
 		}
 	}

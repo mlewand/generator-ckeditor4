@@ -30,15 +30,19 @@ describe( 'ckeditor4:createPlugin', () => {
 
 	beforeEach( () => openStub.reset() );
 
+	// Set of options used to ignore optional parts.
+	let skipOptionalStuff = {
+		skipTests: true,
+		skipSamples: true,
+		skipVscode: true,
+		skipLang: true,
+		skipIcon: true
+	};
+
 	it( 'creates a basic plugin', () => {
 		return yeomanTest.run( path.join( __dirname, '../../../generators/createPlugin' ) )
 			.withArguments( 'my-plugin' )
-			.withOptions( {
-				skipTests: true,
-				skipSamples: true,
-				skipVscode: true,
-				skipLang: true
-			} )
+			.withOptions( skipOptionalStuff )
 			.inTmpDir()
 			.then( tmpDir => {
 				expect( path.join( tmpDir, 'my-plugin' ) ).to.be.a.directory();
@@ -55,12 +59,7 @@ describe( 'ckeditor4:createPlugin', () => {
 	it( 'creates a basic plugin in a workspace', () => {
 		return yeomanTest.run( path.join( __dirname, '../../../generators/createPlugin' ) )
 			.withArguments( 'my-plugin' )
-			.withOptions( {
-				skipTests: true,
-				skipSamples: true,
-				skipVscode: true,
-				skipLang: true
-			} )
+			.withOptions( skipOptionalStuff )
 			.inTmpDir( function( tmpDir ) {
 				// Let's recreate a dir structure reminding a valid CKE4 installation.
 				let done = this.async();
@@ -185,7 +184,8 @@ describe( 'ckeditor4:createPlugin', () => {
 				.withOptions( {
 					skipSamples: true,
 					skipTests: true,
-					skipVscode: true
+					skipVscode: true,
+					skipIcon: true
 				} )
 				.inTmpDir()
 				.then( tmpDir => {
@@ -204,6 +204,21 @@ describe( 'ckeditor4:createPlugin', () => {
 			return yeomanTest.run( path.join( __dirname, '../../../generators/createPlugin' ) )
 				.withArguments( 'foobar' )
 				.withOptions( {
+					skipLang: true,
+					skipIcon: true
+				} )
+				.inTmpDir()
+				.then( tmpDir => {
+					expect( path.join( tmpDir, 'foobar', 'lang' ) ).not.to.be.a.path();
+				} );
+		} );
+	} );
+
+	describe( 'icon', () => {
+		it( 'works', () => {
+			return yeomanTest.run( path.join( __dirname, '../../../generators/createPlugin' ) )
+				.withArguments( 'foobar' )
+				.withOptions( {
 					skipSamples: true,
 					skipTests: true,
 					skipVscode: true,
@@ -211,7 +226,25 @@ describe( 'ckeditor4:createPlugin', () => {
 				} )
 				.inTmpDir()
 				.then( tmpDir => {
-					expect( path.join( tmpDir, 'foobar', 'lang' ) ).not.to.be.a.path();
+					expect( path.join( tmpDir, 'foobar', 'icons' ) ).to.be.a.directory();
+
+					expect( path.join( tmpDir, 'foobar', 'icons', 'foobar.png' ) ).to.be.file()
+						.and.equal( path.join( __dirname, '_fixtures', 'expectedIcons', 'icons', 'foobar.png' ) );
+
+					expect( path.join( tmpDir, 'foobar', 'icons', 'hidpi', 'foobar.png' ) ).to.be.file()
+						.and.equal( path.join( __dirname, '_fixtures', 'expectedIcons', 'icons', 'hidpi', 'foobar.png' ) );
+				} );
+		} );
+
+		it( 'can be disabled', () => {
+			return yeomanTest.run( path.join( __dirname, '../../../generators/createPlugin' ) )
+				.withArguments( 'foobar' )
+				.withOptions( {
+					skipIcon: true
+				} )
+				.inTmpDir()
+				.then( tmpDir => {
+					expect( path.join( tmpDir, 'foobar', 'icons' ) ).not.to.be.a.path();
 				} );
 		} );
 	} );
@@ -225,7 +258,8 @@ describe( 'ckeditor4:createPlugin', () => {
 					skipSamples: true,
 					skipTests: true,
 					skipVscode: true,
-					skipLang: true
+					skipLang: true,
+					skipIcon: true
 				} )
 				.inTmpDir()
 				.then( tmpDir => {
