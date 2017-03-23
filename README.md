@@ -6,6 +6,14 @@ This generator helps with some common CKEditor 4 tasks.
 
 Note that some commands rely on being launched in CKEditor 4 workspace directory.
 
+## Create Plugin
+
+```bash
+yo ckeditor4:createPlugin [name]
+```
+
+Creates a new plugin in a `name` directory. This generator has multiple options, use `yo ckeditor4:createPlugin --help` to list them all.
+
 ## Issues
 
 ### Add
@@ -41,11 +49,3 @@ Builds CKEditor project.
 `yo ckeditor4:build --preset standard`
 
 `yo ckeditor4:build --preset basic --all`
-
-## Create Plugin
-
-```bash
-yo ckeditor4:createPlugin [name]
-```
-
-Creates a new directory, with a `name` plugin boilerplate.
