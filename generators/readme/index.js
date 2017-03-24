@@ -16,6 +16,8 @@ class ReadmeGenerator extends GeneratorBase {
 	}
 
 	writing() {
+		this.options.description = this.options.description || '';
+
 		this.fs.copyTpl(
 			this.templatePath( 'README.md' ),
 			this.destinationPath( 'README.md' ),

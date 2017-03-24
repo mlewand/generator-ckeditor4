@@ -38,7 +38,8 @@ describe( 'ckeditor4:createPlugin', () => {
 		skipVscode: true,
 		skipLang: true,
 		skipIcon: true,
-		skipPackage: true
+		skipPackage: true,
+		skipReadme: true
 	};
 
 	it( 'creates a basic plugin', () => {
