@@ -2,7 +2,7 @@ const GeneratorBase = require( '../../src/GeneratorBase' ),
 	_ = require( 'lodash' );
 
 // This generator creates a package.json file.
-class CreatePluginGenerator extends GeneratorBase {
+class PackageGenerator extends GeneratorBase {
 	constructor( args, opts ) {
 		super( args, opts );
 
@@ -57,4 +57,4 @@ class CreatePluginGenerator extends GeneratorBase {
 	}
 }
 
-module.exports = CreatePluginGenerator;
+module.exports = PackageGenerator;
