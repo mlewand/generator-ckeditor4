@@ -48,6 +48,12 @@ class CreatePluginGenerator extends GeneratorBase {
 			default: false
 		} );
 
+		this.option( 'skipReadme', {
+			description: 'If set, no README.md will be generated.',
+			type: Boolean,
+			default: false
+		} );
+
 		this.option( 'dialog', {
 			alias: 'd',
 			description: 'If set, a simple dialog will be added.',
@@ -66,7 +72,7 @@ class CreatePluginGenerator extends GeneratorBase {
 			fs: []
 		};
 
-		const beautify = require('gulp-beautify'),
+		const beautify = require( 'gulp-beautify' ),
 			gulpIf = require( 'gulp-if' );
 
 		this.registerTransformStream( [
@@ -81,12 +87,18 @@ class CreatePluginGenerator extends GeneratorBase {
 			} ) )
 		] );
 
+		let optionsWithArguments = _.extend( {}, this.options, {
+			arguments: [ this.options.name ]
+		} );
+
 		this.composeWith( require.resolve( './../createPluginVscode' ), this.options );
 
+		if ( !this.options.skipReadme ) {
+			this.composeWith( require.resolve( './../readme' ), optionsWithArguments );
+		}
+
 		if ( !this.options.skipPackage ) {
-			this.composeWith( require.resolve( './../package' ), _.extend( {}, this.options, {
-				arguments: [ this.options.name ]
-			} ) );
+			this.composeWith( require.resolve( './../package' ), optionsWithArguments );
 		}
 	}
 
@@ -250,8 +262,8 @@ class CreatePluginGenerator extends GeneratorBase {
 		}
 
 		return workspace ?
-				path.join( workspace.getPluginsPath(), dirName ) :
-				this.destinationPath( dirName );
+			path.join( workspace.getPluginsPath(), dirName ) :
+			this.destinationPath( dirName );
 	}
 
 	/**
