@@ -8,7 +8,7 @@ Note that some commands rely on being launched in CKEditor 4 workspace directory
 
 ## Installation
 
-First, install [Yeoman](http://yeoman.io) and generator-appveyor using [npm](https://www.npmjs.com/) (we assume you have pre-installed [node.js](https://nodejs.org/)).
+First, install [Yeoman](http://yeoman.io) and generator-ckeditor4 using [npm](https://www.npmjs.com/) (we assume you have pre-installed [node.js](https://nodejs.org/)).
 
 ```bash
 npm install -g yo generator-ckeditor4
