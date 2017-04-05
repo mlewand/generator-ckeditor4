@@ -1,10 +1,10 @@
 /* @bender-include: /apps/plugin/plugin.js */
-/* @bender-ckeditor-plugins: my-plugin */
+/* @bender-ckeditor-plugins: foo */
 
 bender.editor = true;
 
 bender.test( {
 	'plugin is loaded': function() {
-		assert.isTrue( 'my-plugin' in this.editor.plugins, 'Plugin is loaded' );
+		assert.isTrue( 'foo' in this.editor.plugins, 'Plugin is loaded' );
 	}
 } );

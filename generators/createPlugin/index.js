@@ -117,6 +117,34 @@ class CreatePluginGenerator extends GeneratorBase {
 		this._writeFsContribs();
 	}
 
+	writing() {
+		if ( !this.options.skipTests ) {
+			this.fs.extendJSON( this.destinationPath( 'package.json' ), {
+				scripts: {
+					'test': 'node ./node_modules/benderjs-cli/bin/bender run chrome',
+					'test-server': 'node ./node_modules/benderjs-cli/bin/bender server run'
+				},
+				devDependencies: {
+					benderjs: '^0.4.1',
+					'benderjs-cli': '^0.1.1',
+					'benderjs-coverage': '^0.2.1',
+					'benderjs-yui': '^0.3.3',
+					'ckeditor-dev': '^4.6.2',
+					'eslint-config-ckeditor4': '^1.0.0',
+					'resolve-pkg': '^1.0.0'
+				}
+			} );
+
+			this.npmInstall( [
+				'benderjs',
+				'benderjs-cli',
+				'benderjs-coverage',
+				'benderjs-yui',
+				'resolve-pkg'
+			], { 'save-dev': true } );
+		}
+	}
+
 	end() {
 		// Files needs to be written before calling open, as otherwise file doesn't exists yet.
 		this._open();

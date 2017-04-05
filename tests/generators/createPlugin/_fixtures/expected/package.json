@@ -1,0 +1,27 @@
+{
+  "devDependencies": {
+    "@types/ckeditor": "0.0.37",
+    "benderjs": "^0.4.1",
+    "benderjs-cli": "^0.1.1",
+    "benderjs-coverage": "^0.2.1",
+    "benderjs-yui": "^0.3.3",
+    "ckeditor-dev": "^4.6.2",
+    "eslint-config-ckeditor4": "^1.0.0",
+    "resolve-pkg": "^1.0.0"
+  },
+  "scripts": {
+    "test": "node ./node_modules/benderjs-cli/bin/bender run chrome",
+    "test-server": "node ./node_modules/benderjs-cli/bin/bender server run"
+  },
+  "name": "ckeditor-plugin-foo",
+  "version": "0.0.0",
+  "description": "Foo",
+  "author": "aaa",
+  "main": "plugin.js",
+  "keywords": [
+    "ckeditor4",
+    "plugin",
+    "boilerplate"
+  ],
+  "dependencies": {}
+}
