@@ -1,3 +1,4 @@
+/* @bender-include: /apps/plugin/plugin.js */
 /* @bender-ckeditor-plugins: <%= shortName %> */
 
 bender.editor = true;
