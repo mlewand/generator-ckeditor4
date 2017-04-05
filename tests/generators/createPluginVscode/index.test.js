@@ -27,8 +27,6 @@ describe( 'VSCode additions', () => {
 				'skipVscode': true
 			} )
 			.then( function( dir ) {
-				expect( path.join( dir, 'package.json' ) ).not.to.be.a.path();
-
 				expect( npmInstallStub ).not.to.be.calledWithExactly( [ '@types/ckeditor' ], { 'save-dev': true } );
 			} );
 	} );

@@ -59,6 +59,26 @@ describe( 'ckeditor4:createPlugin', () => {
 			} );
 	} );
 
+	it( 'integration tests', () => {
+		return yeomanTest.run( path.join( __dirname, '../../../generators/createPlugin' ) )
+			.withArguments( 'foo' )
+			.withOptions( {
+				description: 'Foo',
+				author: 'aaa'
+			} )
+			.inTmpDir()
+			.then( tmpDir => {
+				expect( path.join( tmpDir, 'foo' ) ).to.be.a.directory();
+
+				return compareDirectoryContents( path.join( __dirname, '_fixtures', 'expected' ),
+					path.join( tmpDir, 'foo' ),
+					{
+						skipEol: false,
+						diff: true
+					} );
+			} );
+	} );
+
 	it( 'creates a basic plugin in a workspace', () => {
 		return yeomanTest.run( path.join( __dirname, '../../../generators/createPlugin' ) )
 			.withArguments( 'my-plugin' )
@@ -175,6 +195,7 @@ describe( 'ckeditor4:createPlugin', () => {
 				.inTmpDir()
 				.then( tmpDir => {
 					expect( path.join( tmpDir, 'my-plugin', 'tests' ) ).not.to.be.a.path();
+					expect( path.join( tmpDir, 'my-plugin', 'bender.js' ) ).not.to.be.a.path();
 				} );
 		} );
 	} );
