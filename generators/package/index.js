@@ -43,17 +43,28 @@ class PackageGenerator extends GeneratorBase {
 
 	writing() {
 		var pkg = {
-			name: `ckeditor-plugin-${this.options.name}`,
-			version: '0.0.0',
-			description: this.options.description,
-			author: this.options.author,
-			main: 'plugin.js',
-			keywords: [],
-			dependencies: {},
-			devDependencies: {}
-		};
+				name: `ckeditor-plugin-${this.options.name}`,
+				version: '0.0.0',
+				description: this.options.description,
+				author: this.options.author,
+				main: 'plugin.js',
+				keywords: [
+					'ckeditor4',
+					'plugin',
+					'boilerplate'
+				],
+				dependencies: {},
+				devDependencies: {}
+			},
+			outPath = this.destinationPath( 'package.json' );
 
-		this.fs.writeJSON( this.destinationPath( 'package.json' ), pkg );
+		this.npmInstall( [ 'ckeditor-dev', 'eslint-config-ckeditor4' ], { 'save-dev': true } );
+
+		if ( this.fs.exists( outPath ) ) {
+			this.fs.extendJSON( outPath, pkg );
+		} else {
+			this.fs.writeJSON( outPath, pkg );
+		}
 	}
 }
 

@@ -13,13 +13,15 @@ class CreatePluginGenerator extends GeneratorBase {
 		} );
 	}
 
-	writing() {
+	default() {
 		if ( !this.options.skipVscode ) {
-			if ( !this.fs.exists( 'package.json' ) ) {
-				// Make sure that package.json exists, so that devDeps are saved.
-				this.fs.writeJSON( this.destinationPath( 'package.json' ), {} );
-			}
+			this.fs.extendJSON( this.destinationPath( 'package.json' ), {
+				devDependencies: {
+					"@types/ckeditor": "0.0.37"
+				}
+			} );
 
+			// Still call npmInstall so there's guarantee it's gonna be ran.
 			this.npmInstall( [ '@types/ckeditor' ], { 'save-dev': true } );
 		}
 	}
