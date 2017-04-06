@@ -1,5 +1,6 @@
 const Generator = require( 'yeoman-generator' ),
 	GeneratorBase = require( '../../src/GeneratorBase' )
+	contributions = require( '../../src/contributions' )
 	path = require( 'path' ),
 	fsp = require( 'fs-promise' ),
 	open = require( 'open' ),
@@ -61,7 +62,13 @@ class CreatePluginGenerator extends GeneratorBase {
 			default: false
 		} );
 
-		this._contribs = {
+		this.option( 'button', {
+			description: 'If set will include a button to the toolbar.',
+			type: Boolean,
+			default: false
+		} );
+
+		contributions.add( {
 			plugin: {
 				properties: {
 					requires: []
@@ -70,7 +77,9 @@ class CreatePluginGenerator extends GeneratorBase {
 			},
 
 			fs: []
-		};
+		} );
+
+		this._contribs = contributions.get();
 
 		const beautify = require( 'gulp-beautify' ),
 			gulpIf = require( 'gulp-if' );
@@ -93,6 +102,10 @@ class CreatePluginGenerator extends GeneratorBase {
 
 		this.composeWith( require.resolve( './../createPluginVscode' ), this.options );
 
+		if ( this.options.button ) {
+			this.composeWith( require.resolve( './../createPluginButton' ), optionsWithArguments );
+		}
+
 		if ( !this.options.skipReadme ) {
 			this.composeWith( require.resolve( './../readme' ), optionsWithArguments );
 		}
@@ -113,8 +126,6 @@ class CreatePluginGenerator extends GeneratorBase {
 		this._dialog();
 		this._lang();
 		this._icon();
-		this._copyTpl( this.templatePath( 'plugin.js' ), this.destinationPath( 'plugin.js' ), 'plugin' )
-		this._writeFsContribs();
 	}
 
 	writing() {
@@ -143,6 +154,9 @@ class CreatePluginGenerator extends GeneratorBase {
 				'resolve-pkg'
 			], { 'save-dev': true } );
 		}
+
+		this._copyTpl( this.templatePath( 'plugin.js' ), this.destinationPath( 'plugin.js' ), 'plugin' )
+		this._writeFsContribs();
 	}
 
 	end() {
