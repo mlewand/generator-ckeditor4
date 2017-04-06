@@ -1,5 +1,4 @@
-const GeneratorBase = require( '../../src/GeneratorBase' ),
-	_ = require( 'lodash' );
+const GeneratorBase = require( '../../src/GeneratorBase' );
 
 class CreatePluginGenerator extends GeneratorBase {
 	constructor( args, opts ) {
