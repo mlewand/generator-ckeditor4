@@ -1,3 +1,4 @@
+'use strict';
 
 let path = require( 'path' ),
 	yeomanTest = require( 'yeoman-test' ),
@@ -122,5 +123,4 @@ describe( 'IssueGenerator', () => {
 				).to.be.rejectedWith( Error, 'Invalid version "4.2" given.' );
 		} );
 	} );
-
 } );

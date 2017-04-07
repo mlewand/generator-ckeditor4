@@ -1,4 +1,4 @@
-tests/*
+tests/**/_fixtures/*
 coverage/*
 presets/*
 generators/createPlugin/templatesOptional/*

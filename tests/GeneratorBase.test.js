@@ -1,6 +1,6 @@
-const path = require( 'path' ),
-	yeomanTest = require( 'yeoman-test' ),
-	GeneratorBase = require( '../src/GeneratorBase' );
+'use strict';
+
+const GeneratorBase = require( '../src/GeneratorBase' );
 
 describe( 'GeneratorBase', () => {
 	let createWorkspaceStub,

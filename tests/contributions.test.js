@@ -1,3 +1,5 @@
+'use strict';
+
 const contributions = require( './../src/contributions' );
 
 describe( 'contributions', () => {

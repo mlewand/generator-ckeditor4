@@ -1,6 +1,7 @@
-let path = require( 'path' ),
+'use strict';
+
+const path = require( 'path' ),
 	testedModulePathFromRoot = '../src/Workspace',
-	testedModulePath = '../../' + testedModulePathFromRoot,
 	Workspace = require( testedModulePathFromRoot );
 
 describe( 'Workspace', () => {

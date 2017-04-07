@@ -1,7 +1,7 @@
+'use strict';
 
 const path = require( 'path' ),
 	yeomanTest = require( 'yeoman-test' ),
-	yoAssert = require( 'yeoman-assert' ),
 	testedModulePath = '../../../generators/createPluginVscode/index',
 	IssueGenerator = require( testedModulePath );
 
@@ -26,7 +26,7 @@ describe( 'VSCode additions', () => {
 			.withOptions( {
 				'skipVscode': true
 			} )
-			.then( function( dir ) {
+			.then( () => {
 				expect( npmInstallStub ).not.to.be.calledWithExactly( [ '@types/ckeditor' ], { 'save-dev': true } );
 			} );
 	} );
