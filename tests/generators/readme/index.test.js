@@ -10,7 +10,7 @@ describe( 'generator-ckeditor4:readme', function() {
 			.withOptions( {
 				description: 'This is a description.'
 			} )
-			.then(( dir ) => {
+			.then( ( dir ) => {
 				expect( path.join( dir, 'README.md' ) ).to.be.a.file().and.contents.equal( path.join( __dirname, '_fixtures', 'README.md' ) );
 			} );
 	} );

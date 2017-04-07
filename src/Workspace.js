@@ -1,3 +1,5 @@
+'use strict';
+
 const path = require( 'path' ),
 	fs = require( 'fs' );
 
@@ -66,15 +68,14 @@ class Workspace {
 		let gitRevSync = require( 'git-rev-sync' );
 
 		try {
-			return gitRevSync.short( this._getDirectoryPath() );
+			return gitRevSync['short']( this._getDirectoryPath() );
 		} catch ( e ) {
 			if ( e instanceof Error && e.toString().match( /no git repository found/ ) ) {
 				// Return null if it's not a git repo, and hash can not be determined.
 				return null;
-			} else {
-				// Still unhandled.
-				throw e;
 			}
+				// Still unhandled.
+			throw e;
 		}
 	}
 
@@ -180,7 +181,7 @@ class Workspace {
 			// @todo: reuse isValidCKEditorSync method.
 			dirHasCKe = dirPath => fs.existsSync( path.join( dirPath, 'ckeditor.js' ) ) && fs.existsSync( path.join( dirPath, 'plugins' ) );
 
-		directories.push( parsed.name )
+		directories.push( parsed.name );
 
 		// NOTE: initializing with directories.length instead of decreasing it by one is **intentional** here.
 		for ( let i = 0; i <= directories.length; i++ ) {

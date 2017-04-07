@@ -1,3 +1,5 @@
+'use strict';
+
 const GeneratorBase = require( '../../src/GeneratorBase' ),
 	contributions = require( '../../src/contributions' );
 

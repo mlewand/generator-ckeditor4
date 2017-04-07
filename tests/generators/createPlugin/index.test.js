@@ -1,3 +1,4 @@
+'use strict';
 
 const compareDirectoryContents = require( '../../_helpers/compareDirectories' ),
 	yeomanTest = require( 'yeoman-test' ),
@@ -22,7 +23,7 @@ describe( 'ckeditor4:createPlugin', () => {
 			ret.year = '2017';
 
 			return ret;
-		}
+		};
 
 		after( () => {
 			CreatePluginGenerator.prototype._getTemplateVars = originalTplVars;
@@ -110,7 +111,7 @@ describe( 'ckeditor4:createPlugin', () => {
 	it( 'doesnt override existing dir', () => {
 		return expect( yeomanTest.run( path.join( __dirname, '../../../generators/createPlugin' ) )
 			.withArguments( 'my-plugin' )
-			.inTmpDir( tmpDir => {
+			.inTmpDir( () => {
 				return fsp.mkdir( 'my-plugin' );
 			} )
 		).to.eventually.be.rejectedWith( Error, 'Directory "my-plugin" already exists.' );
@@ -121,7 +122,7 @@ describe( 'ckeditor4:createPlugin', () => {
 			return yeomanTest.run( path.join( __dirname, '../../../generators/createPlugin' ) )
 				.withArguments( 'custom-plugin' )
 				.inTmpDir()
-				.then( ( tmpDir ) => {
+				.then( () => {
 					expect( openStub ).not.to.be.called;
 				} );
 		} );
@@ -313,5 +314,4 @@ describe( 'ckeditor4:createPlugin', () => {
 				} );
 		} );
 	} );
-
 } );

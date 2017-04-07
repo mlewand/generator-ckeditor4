@@ -1,5 +1,7 @@
 // Main file with chai and other lib configuration.
 
+'use strict';
+
 require( 'chai' ).use( require( 'sinon-chai' ) );
 require( 'chai' ).use( require( 'chai-as-promised' ) );
 require( 'chai' ).use( require( 'chai-fs' ) );

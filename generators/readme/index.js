@@ -24,6 +24,6 @@ class ReadmeGenerator extends GeneratorBase {
 			this.options
 		);
 	}
-};
+}
 
 module.exports = ReadmeGenerator;

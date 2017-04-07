@@ -1,12 +1,12 @@
-let path = require( 'path' ),
-	yeomanTest = require( 'yeoman-test' ),
+'use strict';
+
+const path = require( 'path' ),
 	gitCloneStub = sinon.spy( function( url, path, opts, callback ) {
 		callback();
 	} ),
 	BuildGenerator = proxyquire( '../generators/build/index', {
 		'git-clone': gitCloneStub
-	} ),
-	compareDirectoryContents = require( '../../_helpers/compareDirectories' );
+	} );
 
 describe( 'BuildGenerator', () => {
 	beforeEach( () => {
@@ -47,7 +47,7 @@ describe( 'BuildGenerator', () => {
 
 			return BuildGenerator.prototype._checkPlugins( workspace, buildinfo )
 				.then( ( res ) => {
-					expect( res ).to.be.null;
+					expect( res ).to.be['null'];
 				} );
 		} );
 	} );

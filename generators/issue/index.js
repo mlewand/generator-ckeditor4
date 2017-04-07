@@ -1,3 +1,5 @@
+'use strict';
+
 let GeneratorBase = require( '../../src/GeneratorBase' ),
 	open = require( 'open' );
 

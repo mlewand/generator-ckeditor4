@@ -1,6 +1,6 @@
-const path = require( 'path' ),
-	yeomanTest = require( 'yeoman-test' ),
-	GeneratorBase = require( '../src/GeneratorBase' );
+'use strict';
+
+const GeneratorBase = require( '../src/GeneratorBase' );
 
 describe( 'GeneratorBase', () => {
 	let createWorkspaceStub,
@@ -31,7 +31,6 @@ describe( 'GeneratorBase', () => {
 	} );
 
 	describe( 'logVerbose()', () => {
-
 		it( 'Logs when verbose option was given', () => {
 			mock.options.verbose = true;
 			mock.logVerbose( 'foobar' );

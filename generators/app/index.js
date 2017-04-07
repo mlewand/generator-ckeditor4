@@ -1,4 +1,6 @@
-var Generator = require('yeoman-generator');
+'use strict';
+
+const Generator = require( 'yeoman-generator' );
 
 class CKEditor4Generator extends Generator {
 	constructor( args, opts ) {

@@ -1,10 +1,10 @@
-let path = require( 'path' ),
+'use strict';
+
+const path = require( 'path' ),
 	testedModulePathFromRoot = '../src/BuildInfo',
-	testedModulePath = '../../' + testedModulePathFromRoot,
 	BuildInfo = require( testedModulePathFromRoot );
 
 describe( 'BuildInfo', () => {
-
 	describe( 'getArguments()', () => {
 		it( 'serializes default values correctly', () => {
 			let config = {
@@ -67,7 +67,6 @@ describe( 'BuildInfo', () => {
 
 
 	describe( 'getPlugins', () => {
-
 		it( 'Returns valid type', () => {
 			let mock = {
 				presetPath: path.join( __dirname, '_fixtures', 'BuildInfo', 'sample-cfg.js' ),
@@ -97,12 +96,10 @@ describe( 'BuildInfo', () => {
 
 
 	describe( '_parsePresetConfig', () => {
-
 		it( 'returns a promise', () => {
 			let jsPath = path.join( __dirname, '_fixtures', 'BuildInfo', 'sample-cfg.js' );
 
 			expect( BuildInfo.prototype._parsePresetConfig.call( null, jsPath ) ).to.be.a( 'promise' );
-
 		} );
 
 		it( 'parses js file', () => {
@@ -123,7 +120,6 @@ describe( 'BuildInfo', () => {
 							wsc: 'https://github.com/WebSpellChecker/ckeditor-plugin-wsc.git#b67a28e0f89d9b2bbc6c9e22355e7da7d3fa0edd'
 						}
 					} );
-
 				} );
 		} );
 
@@ -133,8 +129,5 @@ describe( 'BuildInfo', () => {
 			return expect( BuildInfo.prototype._parsePresetConfig.call( null, jsPath ) )
 				.to.be.rejectedWith( Error, 'Parsed preset config did not expose CKBUILDER_CONFIG variable.' );
 		} );
-
 	} );
-
-
 } );

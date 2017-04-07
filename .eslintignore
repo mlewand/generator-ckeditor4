@@ -1,0 +1,5 @@
+tests/**/_fixtures/*
+coverage/*
+presets/*
+generators/createPlugin/templatesOptional/*
+generators/createPlugin/templates/*

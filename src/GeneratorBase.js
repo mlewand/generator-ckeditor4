@@ -1,4 +1,6 @@
-var Workspace = require( './Workspace' ),
+'use strict';
+
+const Workspace = require( './Workspace' ),
 	Generator = require( 'yeoman-generator' );
 
 /**

@@ -1,9 +1,10 @@
+'use strict';
+
 const path = require( 'path' ),
 	fs = require( 'fs' ),
 	fsp = require( 'fs-promise' ),
 	yeomanTest = require( 'yeoman-test' ),
 	rimraf = require( 'rimraf' ),
-	BuildGenerator = require( '../../../generators/build/index' ),
 	GeneratorBase = require( '../../../src/GeneratorBase' ),
 	Workspace = require( '../../../src/Workspace' ),
 	compareDirectoryContents = require( '../../_helpers/compareDirectories' );
@@ -20,7 +21,7 @@ describe( 'BuildGenerator integration tests', function() {
 		createWorkspaceStub;
 
 	before( () => {
-		createWorkspaceStub = sinon.stub( GeneratorBase.prototype, '_createWorkspace', path => {
+		createWorkspaceStub = sinon.stub( GeneratorBase.prototype, '_createWorkspace', () => {
 			let ret = new Workspace( ckePath );
 
 			ret.getRevision = sinon.stub().returns( revisionStub );
@@ -55,10 +56,10 @@ describe( 'BuildGenerator integration tests', function() {
 	function testIntegrationBuild() {
 		// First: remove previous build if any.
 		return new Promise( ( resolve, reject ) => {
-				rimraf( outputPath, err => {
-					return err ? reject( err ) : resolve();
-				} );
-			} )
+			rimraf( outputPath, err => {
+				return err ? reject( err ) : resolve();
+			} );
+		} )
 			.then( () => {
 				// Then Mock yoeman instance.
 				let context = yeomanTest.run( generatorPath );
@@ -143,5 +144,4 @@ describe( 'BuildGenerator integration tests', function() {
 
 		return expect( testIntegrationBuild() ).to.be.rejectedWith( Error, /^Output directory ".+?" already exists.$/ );
 	} );
-
 } );
