@@ -1,5 +1,6 @@
-const GeneratorBase = require( '../../src/GeneratorBase' ),
-	_ = require( 'lodash' );
+'use strict';
+
+const GeneratorBase = require( '../../src/GeneratorBase' );
 
 // This generator creates a package.json file.
 class PackageGenerator extends GeneratorBase {
@@ -31,7 +32,7 @@ class PackageGenerator extends GeneratorBase {
 			message: 'Author',
 			when: !this.options.author,
 			store: true
-		}];
+		} ];
 
 		return this.prompt( prompts )
 			.then( answers => {

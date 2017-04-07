@@ -1,3 +1,5 @@
+'use strict';
+
 let GeneratorBase = require( '../../src/GeneratorBase' ),
 	path = require( 'path' ),
 	fs = require( 'fs' ),
@@ -68,14 +70,14 @@ class BuildGenerator extends GeneratorBase {
 			missingPlugins;
 
 		return new Promise( ( resolve, reject ) => {
-				if ( !overwrite ) {
-					fs.exists( outputDir, exists => {
-						return exists ? resolve() : reject( new Error( `Output directory "${outputDir}" already exists.` ) );
-					} );
-				} else {
-					resolve();
-				}
-			} )
+			if ( !overwrite ) {
+				fs.exists( outputDir, exists => {
+					return exists ? resolve() : reject( new Error( `Output directory "${outputDir}" already exists.` ) );
+				} );
+			} else {
+				resolve();
+			}
+		} )
 			.then( () => {
 				that._markStage( 'Checking preset plugins' );
 				return that._checkPlugins( that._getWorkspace(), info );
@@ -84,28 +86,26 @@ class BuildGenerator extends GeneratorBase {
 				missingPlugins = _missingPlugins;
 
 				if ( missingPlugins ) {
-					that.logVerbose( `Found missing plugins: ${Object.keys(missingPlugins)}` );
+					that.logVerbose( `Found missing plugins: ${Object.keys( missingPlugins )}` );
 
 					return that.prompt( [ {
-							name: 'missingPlugins',
-							message: 'There are some missing plugins, would you like us to download them for you?',
-							type: 'confirm'
-						} ] )
+						name: 'missingPlugins',
+						message: 'There are some missing plugins, would you like us to download them for you?',
+						type: 'confirm'
+					} ] )
 						.then( answers => {
 							if ( !answers.missingPlugins ) {
 								return new Promise( ( resolve, reject ) => {
 									reject( new Error( 'Refused to install missing plugins.' ) );
 								} );
-							} else {
-								return that._processMissingPlugins( missingPlugins );
 							}
+							return that._processMissingPlugins( missingPlugins );
 						} );
-				} else {
-					// No plugins missing, we're good to go.
-					return new Promise( ( resolve, reject ) => {
-						resolve( null );
-					} );
 				}
+					// No plugins missing, we're good to go.
+				return new Promise( resolve => {
+					resolve( null );
+				} );
 			} )
 			.then( () => {
 				that._markStage( 'Ready to build' );
@@ -148,8 +148,7 @@ class BuildGenerator extends GeneratorBase {
 
 		return new Promise( ( resolve, reject ) => {
 			// Path to generator's main dir, where presets, and jar file can be found.
-			let output = '',
-				errOutput = '',
+			let errOutput = '',
 				buildProcess;
 
 			that._markStage( `Calling ckbuilder.jar to build ${preset} preset` );
@@ -174,7 +173,6 @@ class BuildGenerator extends GeneratorBase {
 			buildProcess.on( 'close', code => {
 				return code === 0 ? resolve() : reject( `Invalid code returned: ${code}\n\nStderr:\n${errOutput}` );
 			} );
-
 		} ).then( () => {
 			that._markStage( `Moving temp build directory to ${outputDir}` );
 
@@ -184,7 +182,7 @@ class BuildGenerator extends GeneratorBase {
 
 			fs.renameSync( tmpOutputDir, outputDir );
 			that._markStage( 'Done!' );
-		} ).catch( ( error ) => {
+		} )['catch']( ( error ) => {
 			that._markStage( 'Error occurred, removing temp directory.' );
 			that.log( error );
 			rimraf.sync( tmpOutputDir );
@@ -238,11 +236,10 @@ class BuildGenerator extends GeneratorBase {
 		if ( typeof value === 'string' ) {
 			this.logVerbose( `${name} is a git URL` );
 			return this._cloneExternalPlugin( value, name );
-		} else {
-			return new Promise( ( resolve, reject ) => {
-				reject( new Error( `No handling for value ${value} yet - plugin ${name}` ) );
-			} );
 		}
+		return new Promise( ( resolve, reject ) => {
+			reject( new Error( `No handling for value ${value} yet - plugin ${name}` ) );
+		} );
 	}
 
 	/**
@@ -261,7 +258,7 @@ class BuildGenerator extends GeneratorBase {
 		return Promise.all( [ workspace.getPlugins(), info.getPlugins() ] )
 			.then( ( results ) => {
 				let [ workspacePlugins, buildInfoPlugins ] = results,
-				_ = require( 'lodash' ),
+					_ = require( 'lodash' ),
 					ret;
 
 				ret = _.keys( buildInfoPlugins ).filter( name => workspacePlugins.indexOf( name ) === -1 )

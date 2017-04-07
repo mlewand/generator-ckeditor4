@@ -31,7 +31,6 @@ describe( 'GeneratorBase', () => {
 	} );
 
 	describe( 'logVerbose()', () => {
-
 		it( 'Logs when verbose option was given', () => {
 			mock.options.verbose = true;
 			mock.logVerbose( 'foobar' );

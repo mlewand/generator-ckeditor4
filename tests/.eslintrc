@@ -1,0 +1,15 @@
+{
+	"globals": {
+		"describe": true,
+		"it": true,
+		"before": true,
+		"expect": true,
+		"beforeEach": true,
+		"after": true,
+		"afterEach": true,
+		"sinon": true,
+		"_": true,
+		"proxyquire": true,
+		"path": true
+	}
+}

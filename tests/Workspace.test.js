@@ -36,7 +36,7 @@ describe( 'Workspace', () => {
 		it( 'throws when _guessWorkspaceRoot returns invalid path', () => {
 			Workspace.prototype._guessWorkspaceRoot.returns( null );
 
-			expect( () => new Workspace( '/non/existing/path' ) ).to.throw( Error, 'Sorry, can\'t locate CKEditor 4 in "/non/existing/path" path.' );
+			expect( () => new Workspace( '/non/existing/path' ) ).to['throw']( Error, 'Sorry, can\'t locate CKEditor 4 in "/non/existing/path" path.' );
 		} );
 	} );
 
@@ -63,7 +63,6 @@ describe( 'Workspace', () => {
 		} );
 
 		it( 'Returns empty array with nonexisting plugins dir', () => {
-
 			return Workspace.prototype.getPlugins.call( workspaceStub )
 				.then( ( plugins ) => {
 					expect( plugins ).to.be.an( 'array' );
@@ -75,19 +74,19 @@ describe( 'Workspace', () => {
 	describe( 'isValidCKEditorSync()', () => {
 		it( 'works when needed', () => {
 			let dirPath  = path.join( __dirname, '_fixtures', 'Workspace', '_guessWorkspaceRoot', 'topMostCke' );
-			expect( Workspace.prototype.isValidCKEditorSync( dirPath ) ).to.be.true;
+			expect( Workspace.prototype.isValidCKEditorSync( dirPath ) ).to.be['true'];
 		} );
 
 		it( 'uses _path if no argument is given', () => {
 			let mock = {
-					_path: path.join( __dirname, '_fixtures', 'Workspace', '_guessWorkspaceRoot', 'topMostCke' )
-				};
-			expect( Workspace.prototype.isValidCKEditorSync.call( mock ) ).to.be.true;
+				_path: path.join( __dirname, '_fixtures', 'Workspace', '_guessWorkspaceRoot', 'topMostCke' )
+			};
+			expect( Workspace.prototype.isValidCKEditorSync.call( mock ) ).to.be['true'];
 		} );
 
 		it( 'doesnt work in subdirs', () => {
 			let dirPath  = path.join( __dirname, '_fixtures', 'Workspace', '_guessWorkspaceRoot', 'topMostCke', 'plugins' );
-			expect( Workspace.prototype.isValidCKEditorSync( dirPath ) ).to.be.false;
+			expect( Workspace.prototype.isValidCKEditorSync( dirPath ) ).to.be['false'];
 		} );
 	} );
 
@@ -101,7 +100,6 @@ describe( 'Workspace', () => {
 
 
 	describe( '_guessWorkspaceRoot()', () => {
-
 		beforeEach( () => {
 			// Here we want to test the real thing!
 			Workspace.prototype._guessWorkspaceRoot.restore();
@@ -130,10 +128,7 @@ describe( 'Workspace', () => {
 		it( 'Informs about invalid directory', () => {
 			var topMostDir = path.join( __dirname );
 
-			expect( mock._guessWorkspaceRoot( topMostDir ) ).to.be.null;
+			expect( mock._guessWorkspaceRoot( topMostDir ) ).to.be['null'];
 		} );
-
 	} );
-
-
 } );

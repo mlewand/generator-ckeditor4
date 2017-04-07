@@ -1,6 +1,7 @@
-const Generator = require( 'yeoman-generator' ),
-	GeneratorBase = require( '../../src/GeneratorBase' )
-	contributions = require( '../../src/contributions' )
+'use strict';
+
+const GeneratorBase = require( '../../src/GeneratorBase' ),
+	contributions = require( '../../src/contributions' ),
 	path = require( 'path' ),
 	fsp = require( 'fs-promise' ),
 	open = require( 'open' ),
@@ -89,10 +90,12 @@ class CreatePluginGenerator extends GeneratorBase {
 			gulpIf( function( file ) {
 				return file.extname.toLowerCase() === '.js';
 			}, beautify( {
+				/* eslint-disable */
 				indent_with_tabs: true,
 				space_in_paren: true,
 				space_in_empty_paren: false,
 				space_after_anon_function: false
+				/* eslint-enable */
 			} ) )
 		] );
 
@@ -155,7 +158,7 @@ class CreatePluginGenerator extends GeneratorBase {
 			], { 'save-dev': true } );
 		}
 
-		this._copyTpl( this.templatePath( 'plugin.js' ), this.destinationPath( 'plugin.js' ), 'plugin' )
+		this._copyTpl( this.templatePath( 'plugin.js' ), this.destinationPath( 'plugin.js' ), 'plugin' );
 		this._writeFsContribs();
 	}
 
@@ -243,10 +246,10 @@ class CreatePluginGenerator extends GeneratorBase {
 			this._contribs.plugin.properties.hidpi = true;
 
 			this._contribs.fs.push( [
-				this.templatePath( path.join( '..', 'templatesOptional', 'icon', 'icons', `boilerplate.png` ) ),
+				this.templatePath( path.join( '..', 'templatesOptional', 'icon', 'icons', 'boilerplate.png' ) ),
 				this.destinationPath() + path.sep + path.join( 'icons', `${name}.png` )
 			], [
-				this.templatePath( path.join( '..', 'templatesOptional', 'icon', 'icons', 'hidpi', `boilerplate.png` ) ),
+				this.templatePath( path.join( '..', 'templatesOptional', 'icon', 'icons', 'hidpi', 'boilerplate.png' ) ),
 				this.destinationPath() + path.sep + path.join( 'icons', 'hidpi', `${name}.png` )
 			] );
 		}

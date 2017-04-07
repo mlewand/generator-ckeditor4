@@ -1,3 +1,5 @@
+'use strict';
+
 const GeneratorBase = require( '../../src/GeneratorBase' );
 
 class CreatePluginGenerator extends GeneratorBase {
@@ -16,7 +18,7 @@ class CreatePluginGenerator extends GeneratorBase {
 		if ( !this.options.skipVscode ) {
 			this.fs.extendJSON( this.destinationPath( 'package.json' ), {
 				devDependencies: {
-					"@types/ckeditor": "0.0.37"
+					'@types/ckeditor': '0.0.37'
 				}
 			} );
 

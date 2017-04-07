@@ -1,3 +1,5 @@
+'use strict';
+
 const PRESET_DEFAULT = 'basic';
 
 class BuildInfo {
@@ -109,9 +111,8 @@ class BuildInfo {
 	 * @memberOf BuildInfo
 	 */
 	_parsePresetConfig( path ) {
-		const util = require( 'util' );
-		const vm = require( 'vm' );
-		const fs = require( 'fs' );
+		const vm = require( 'vm' ),
+			fs = require( 'fs' );
 
 		return new Promise( ( resolve, reject ) => {
 			const sandbox = {};

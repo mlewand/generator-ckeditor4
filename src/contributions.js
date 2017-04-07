@@ -1,3 +1,4 @@
+'use strict';
 
 // This module exports contributions object.
 // The main goal here is for contribution object to be shared across different generators, as often
@@ -10,10 +11,10 @@ const _ = require( 'lodash' ),
 
 module.exports = {
 	add( input ) {
-		_.merge( dictionary, input )
+		_.merge( dictionary, input );
 	},
 	reset() {
-		for( let i in dictionary ) {
+		for ( let i in dictionary ) {
 			if ( dictionary.hasOwnProperty( i ) ) {
 				delete dictionary[ i ];
 			}
