@@ -1,5 +1,9 @@
 # Yo CKEditor4
 
+<img src="assets/logo-200.png" srcset="assets/logo-200.png 2x" alt="CKEditor4 generator">
+
+---
+
 [![AppVeyor](https://ci.appveyor.com/api/projects/status/ig85qtyidxm4hkcg?svg=true&passingText=master%20%E2%9C%93)](https://ci.appveyor.com/project/mlewand/generator-ckeditor4) [![Travis CI](https://img.shields.io/travis/mlewand/generator-ckeditor4.svg)](https://travis-ci.org/mlewand/generator-ckeditor4)
 
 This generator helps with some common CKEditor 4 tasks.
