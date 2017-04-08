@@ -22,6 +22,7 @@
   },
   "homepage": "https://github.com/mlewand/generator-ckeditor4#readme",
   "dependencies": {
+    "eslint-config-mlewand-node": "^0.1.2",
     "git-clone": "^0.1.0",
     "git-rev-sync": "^1.8.0",
     "git-url-parse": "^6.2.0",
@@ -36,7 +37,6 @@
     "chai": "^3.5.0",
     "chai-as-promised": "^6.0.0",
     "chai-fs": "^1.0.0",
-    "eslint-config-mlewand-node": "^0.1.1",
     "fs-extra": "^2.0.0",
     "fs-promise": "^1.0.0",
     "gulp-if": "^2.0.2",
