@@ -26,7 +26,7 @@ describe( 'Plugin button generator', () => {
 					'		label: \'my-plugin\',\n' +
 					'		command: \'my-plugin\',\n' +
 					'		toolbar: \'insert\'\n' +
-					'	} );\n' );
+					'	} );\n}' );
 				expect( contributions.get().plugin.properties.requires ).to.contain( 'toolbar' );
 			} );
 	} );

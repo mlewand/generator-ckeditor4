@@ -41,7 +41,7 @@ var config = {
 	],
 
 	tests: {
-		'foo': {
+		foo: {
 			applications: [ 'ckeditor' ],
 			basePath: '.',
 			paths: [
