@@ -1,6 +1,6 @@
 {
 	"extends": "eslint-config-mlewand-node",
 	"rules": {
-		"object-property-newline": "error"
+		"object-property-newline": [ "error", { "allowMultiplePropertiesPerLine": true } ]
 	}
 }
