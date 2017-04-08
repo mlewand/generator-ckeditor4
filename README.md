@@ -1,6 +1,6 @@
 # Yo CKEditor4
 
-<img src="assets/logo-200.png" srcset="assets/logo-200.png 2x" alt="CKEditor4 generator">
+![CKEditor4 generator](assets/logo-200.png)
 
 ---
 
