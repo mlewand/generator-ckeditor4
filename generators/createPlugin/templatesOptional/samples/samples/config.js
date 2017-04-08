@@ -5,51 +5,31 @@ CKEDITOR.editorConfig = function( config ) {
 	// %REMOVE_START%
 	config.plugins =
 		'about,' +
-		'a11yhelp,' +
 		'basicstyles,' +
 		'clipboard,' +
-		'colorbutton,' +
-		'contextmenu,' +
-		'dialogadvtab,' +
 		'elementspath,' +
 		'enterkey,' +
 		'floatingspace,' +
-		'font,' +
-		'format,' +
 		'htmlwriter,' +
-		'image,' +
-		'indentlist,' +
-		'indentblock,' +
-		'justify,' +
-		'link,' +
-		'list,' +
-		'liststyle,' +
-		'magicline,' +
-		'maximize,' +
-		'newpage,' +
-		'pastefromword,' +
-		'pastetext,' +
-		'preview,' +
 		'removeformat,' +
-		'resize,' +
-		'selectall,' +
-		'showblocks,' +
-		'showborders,' +
 		'sourcearea,' +
-		'stylescombo,' +
 		'tab,' +
-		'table,' +
-		'tabletools,' +
 		'toolbar,' +
 		'undo,' +
-		'wysiwygarea';
+		'wysiwygarea,' +
+		'<%= shortName %>';
 	// %REMOVE_END%
 
-	// To add any external plugin just use:
-	// CKEDITOR.plugins.addExternal( 'customplugin', '../plugins/customplugin/plugin.js' );
-	// config.plugins += ',customplugin';
+	config.toolbarGroups = [
+		{ name: 'document', groups: [ 'mode' ] },
+		{ name: 'insert' },
+		{ name: 'basicstyles', groups: [ 'basicstyles', 'cleanup' ] }
+	];
 
+	config.removeButtons = 'Underline,Superscript,Subscript';
 
+	config.extraAllowedContent = 'h1';
+
+	// Plugin location needs to be explicitly provided as it's loaded from outside of CKEditor location.
 	CKEDITOR.plugins.addExternal( '<%= shortName %>', location.href.replace( '/index.html', '' ) + '/../plugin.js' );
-	config.plugins += ',<%= shortName %>';
 };
