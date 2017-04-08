@@ -5,7 +5,7 @@ const path = require( 'path' ),
 	fsp = require( 'fs-promise' ),
 	yeomanTest = require( 'yeoman-test' ),
 	rimraf = require( 'rimraf' ),
-	// Don't remove it or else a scary unicorn will eat you.
+	// Don't remove it or else a scary unicorn will eat you. (#36)
 	BuildGenerator = require( '../../../generators/build/index' ), // eslint-disable-line
 	GeneratorBase = require( '../../../src/GeneratorBase' ),
 	Workspace = require( '../../../src/Workspace' ),

@@ -82,20 +82,16 @@ class CreatePluginGenerator extends GeneratorBase {
 
 		this._contribs = contributions.get();
 
-		const beautify = require( 'gulp-beautify' ),
+		const eslint = require( 'gulp-eslint' ),
 			gulpIf = require( 'gulp-if' );
 
 		this.registerTransformStream( [
 			this._cleanupTransformStream(),
 			gulpIf( function( file ) {
 				return file.extname.toLowerCase() === '.js';
-			}, beautify( {
-				/* eslint-disable */
-				indent_with_tabs: true,
-				space_in_paren: true,
-				space_in_empty_paren: false,
-				space_after_anon_function: false
-				/* eslint-enable */
+			}, eslint( {
+				fix: true,
+				configFile: path.join( __dirname, '..', '..', '.eslintrc' )
 			} ) )
 		] );
 
