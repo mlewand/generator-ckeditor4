@@ -5,6 +5,8 @@ const path = require( 'path' ),
 	fsp = require( 'fs-promise' ),
 	yeomanTest = require( 'yeoman-test' ),
 	rimraf = require( 'rimraf' ),
+	// Don't remove it or else a scary unicorn will eat you.
+	BuildGenerator = require( '../../../generators/build/index' ), // eslint-disable-line
 	GeneratorBase = require( '../../../src/GeneratorBase' ),
 	Workspace = require( '../../../src/Workspace' ),
 	compareDirectoryContents = require( '../../_helpers/compareDirectories' );
