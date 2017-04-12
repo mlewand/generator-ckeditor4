@@ -9,7 +9,7 @@ const path = require( 'path' ),
 	BuildGenerator = require( '../../../generators/build/index' ), // eslint-disable-line
 	GeneratorBase = require( '../../../src/GeneratorBase' ),
 	Workspace = require( '../../../src/Workspace' ),
-	compareDirectoryContents = require( '../../_helpers/compareDirectories' );
+	compareDirectories = require( 'compare-directories' );
 
 describe( 'BuildGenerator integration tests', function() {
 	// Each integration test might take a little while...
@@ -81,7 +81,7 @@ describe( 'BuildGenerator integration tests', function() {
 		// Make sure that build directory does not exist.
 		return testIntegrationBuild()
 			.then( () => {
-				return compareDirectoryContents( expectedBuildPath, outputPath );
+				return compareDirectories( expectedBuildPath, outputPath );
 			} );
 	} );
 
@@ -94,7 +94,7 @@ describe( 'BuildGenerator integration tests', function() {
 
 		return testIntegrationBuild()
 			.then( () => {
-				return compareDirectoryContents( expectedBuildPath, outputPath );
+				return compareDirectories( expectedBuildPath, outputPath );
 			} );
 	} );
 

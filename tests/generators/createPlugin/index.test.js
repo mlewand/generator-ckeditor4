@@ -1,6 +1,6 @@
 'use strict';
 
-const compareDirectoryContents = require( '../../_helpers/compareDirectories' ),
+const compareDirectories = require( 'compare-directories' ),
 	yeomanTest = require( 'yeoman-test' ),
 	fsp = require( 'fs-promise' ),
 	fse = require( 'fs-extra' ),
@@ -51,7 +51,7 @@ describe( 'ckeditor4:createPlugin', () => {
 			.then( tmpDir => {
 				expect( path.join( tmpDir, 'my-plugin' ) ).to.be.a.directory();
 
-				return compareDirectoryContents( path.join( __dirname, '_fixtures', 'expectedSimplePlugin' ),
+				return compareDirectories( path.join( __dirname, '_fixtures', 'expectedSimplePlugin' ),
 					path.join( tmpDir, 'my-plugin' ),
 					{
 						skipEol: false,
@@ -71,7 +71,7 @@ describe( 'ckeditor4:createPlugin', () => {
 			.then( tmpDir => {
 				expect( path.join( tmpDir, 'foo' ) ).to.be.a.directory();
 
-				return compareDirectoryContents( path.join( __dirname, '_fixtures', 'expected' ),
+				return compareDirectories( path.join( __dirname, '_fixtures', 'expected' ),
 					path.join( tmpDir, 'foo' ),
 					{
 						skipEol: false,
@@ -99,7 +99,7 @@ describe( 'ckeditor4:createPlugin', () => {
 				expect( path.join( tmpDir, 'my-plugin' ) ).to.not.be.a.path();
 				expect( path.join( tmpDir, 'plugins', 'my-plugin' ) ).to.be.a.directory();
 
-				return compareDirectoryContents( path.join( __dirname, '_fixtures', 'expectedSimplePlugin' ),
+				return compareDirectories( path.join( __dirname, '_fixtures', 'expectedSimplePlugin' ),
 					path.join( tmpDir, 'plugins', 'my-plugin' ),
 					{
 						skipEol: false,
@@ -178,7 +178,7 @@ describe( 'ckeditor4:createPlugin', () => {
 				.then( tmpDir => {
 					expect( path.join( tmpDir, 'my-plugin', 'tests' ) ).to.be.a.directory();
 
-					return compareDirectoryContents( path.join( __dirname, '_fixtures', 'expectedTests' ),
+					return compareDirectories( path.join( __dirname, '_fixtures', 'expectedTests' ),
 						path.join( tmpDir, 'my-plugin', 'tests' ),
 						{
 							skipEol: false,
@@ -211,7 +211,7 @@ describe( 'ckeditor4:createPlugin', () => {
 				.then( tmpDir => {
 					expect( path.join( tmpDir, 'foobar', 'lang' ) ).to.be.a.directory();
 
-					return compareDirectoryContents( path.join( __dirname, '_fixtures', 'expectedLangs' ),
+					return compareDirectories( path.join( __dirname, '_fixtures', 'expectedLangs' ),
 						path.join( tmpDir, 'foobar' ),
 						{
 							skipEol: false,
@@ -272,7 +272,7 @@ describe( 'ckeditor4:createPlugin', () => {
 					expect( outputDialogsDir ).to.be.a.directory();
 					expect( path.join( outputDialogsDir, 'my-plugin.js' ) ).to.be.a.file();
 
-					return compareDirectoryContents( path.join( __dirname, '_fixtures', 'expectedDialogs' ),
+					return compareDirectories( path.join( __dirname, '_fixtures', 'expectedDialogs' ),
 						path.join( tmpDir, 'my-plugin' ),
 						{
 							skipEol: false,
@@ -305,7 +305,7 @@ describe( 'ckeditor4:createPlugin', () => {
 				.then( tmpDir => {
 					expect( path.join( tmpDir, 'my-plugin', 'samples' ) ).to.be.a.directory();
 
-					return compareDirectoryContents( path.join( __dirname, '_fixtures', 'expectedSamples' ),
+					return compareDirectories( path.join( __dirname, '_fixtures', 'expectedSamples' ),
 						path.join( tmpDir, 'my-plugin', 'samples' ),
 						{
 							skipEol: false,
